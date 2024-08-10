@@ -2,38 +2,51 @@
 pragma solidity ^0.8.0;
 
 contract UserRegistration {
+	string public greeting = "Testing User Registration!";
+	address public owner;
 
-    mapping(address => bytes32) private userToHashedPassword;
-    mapping(address => bool) private isRegistered;
+	mapping(address => bytes32) private userToHashedPassword;
+	mapping(address => bool) private isRegistered;
 
-    event UserRegistered(address indexed user);
-    event PasswordUpdated(address indexed user);
+	event UserRegistered(address indexed user);
+	event PasswordUpdated(address indexed user);
 
-    modifier onlyRegistered() {
-        require(isRegistered[msg.sender], "User is not registered.");
-        _;
-    }
+	constructor() {
+		owner = msg.sender; // Set the deployer as the owner
+	}
 
-    function registerUser(bytes32 hashedPassword) external {
-        require(!isRegistered[msg.sender], "User already registered.");
-        require(hashedPassword != bytes32(0), "Invalid password.");
+	modifier onlyOwner() {
+		require(msg.sender == owner, "Not the contract owner");
+		_;
+	}
 
-        userToHashedPassword[msg.sender] = hashedPassword;
-        isRegistered[msg.sender] = true;
+	modifier onlyRegistered() {
+		require(isRegistered[msg.sender], "User is not registered.");
+		_;
+	}
 
-        emit UserRegistered(msg.sender);
-    }
+	function registerUser(bytes32 hashedPassword) external {
+		require(!isRegistered[msg.sender], "User already registered.");
+		require(hashedPassword != bytes32(0), "Invalid password.");
 
-    function authenticateUser(bytes32 hashedPassword) external view returns (bool) {
-        require(isRegistered[msg.sender], "User is not registered.");
-        return userToHashedPassword[msg.sender] == hashedPassword;
-    }
+		userToHashedPassword[msg.sender] = hashedPassword;
+		isRegistered[msg.sender] = true;
 
-    function updatePassword(bytes32 newHashedPassword) external onlyRegistered {
-        require(newHashedPassword != bytes32(0), "Invalid new password.");
+		emit UserRegistered(msg.sender);
+	}
 
-        userToHashedPassword[msg.sender] = newHashedPassword;
+	function authenticateUser(
+		bytes32 hashedPassword
+	) external view returns (bool) {
+		require(isRegistered[msg.sender], "User is not registered.");
+		return userToHashedPassword[msg.sender] == hashedPassword;
+	}
 
-        emit PasswordUpdated(msg.sender);
-    }
+	function updatePassword(bytes32 newHashedPassword) external onlyRegistered {
+		require(newHashedPassword != bytes32(0), "Invalid new password.");
+
+		userToHashedPassword[msg.sender] = newHashedPassword;
+
+		emit PasswordUpdated(msg.sender);
+	}
 }

@@ -119,6 +119,10 @@ const config: HardhatUserConfig = {
       accounts: [deployerPrivateKey],
     },
   },
+  typechain: {
+    outDir: "typechain-types",
+    target: "ethers-v5",
+  },
   // configuration for harhdat-verify plugin
   etherscan: {
     apiKey: `${etherscanApiKey}`,
