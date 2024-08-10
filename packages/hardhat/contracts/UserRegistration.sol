@@ -11,8 +11,8 @@ contract UserRegistration {
 	event UserRegistered(address indexed user);
 	event PasswordUpdated(address indexed user);
 
-	constructor() {
-		owner = msg.sender; // Set the deployer as the owner
+	constructor(address _owner) {
+		owner = _owner == address(0) ? msg.sender : _owner; // Default to deployer if _owner is address(0)
 	}
 
 	modifier onlyOwner() {
@@ -36,10 +36,12 @@ contract UserRegistration {
 	}
 
 	function authenticateUser(
+		address user,
 		bytes32 hashedPassword
 	) external view returns (bool) {
-		require(isRegistered[msg.sender], "User is not registered.");
-		return userToHashedPassword[msg.sender] == hashedPassword;
+		require(isRegistered[user], "User is not registered.");
+		// Additional authentication logic
+		return userToHashedPassword[user] == hashedPassword;
 	}
 
 	function updatePassword(bytes32 newHashedPassword) external onlyRegistered {

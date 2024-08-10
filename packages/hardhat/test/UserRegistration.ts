@@ -14,8 +14,8 @@ describe("UserRegistration", function () {
     deployerAddress = await deployer.getAddress();
 
     const UserRegistrationFactory = await ethers.getContractFactory("UserRegistration");
-    userRegistration = (await UserRegistrationFactory.deploy()) as UserRegistration;
-    await userRegistration.waitForDeployment();
+    userRegistration = (await UserRegistrationFactory.deploy(deployerAddress)) as UserRegistration;
+    await userRegistration.waitForDeployment(); // Ensure deployment is complete
   });
 
   describe("Deployment", function () {
@@ -32,6 +32,7 @@ describe("UserRegistration", function () {
   describe("User Registration", function () {
     it("Should allow a user to register with a hashed password", async function () {
       const hashedPassword = ethers.encodeBytes32String("securePassword123");
+      const userAddress = await user.getAddress();
 
       // Connect the contract instance to the user signer
       const userRegistrationAsUser = userRegistration.connect(user);
@@ -39,7 +40,7 @@ describe("UserRegistration", function () {
       // Register as the user
       await userRegistrationAsUser.registerUser(hashedPassword);
 
-      const isUserRegistered = await userRegistrationAsUser.authenticateUser(hashedPassword);
+      const isUserRegistered = await userRegistrationAsUser.authenticateUser(userAddress, hashedPassword);
       expect(isUserRegistered).to.be.true;
     });
 
@@ -57,21 +58,23 @@ describe("UserRegistration", function () {
   describe("User Authentication", function () {
     it("Should return true for correct password", async function () {
       const hashedPassword = ethers.encodeBytes32String("securePassword123");
+      const userAddress = await user.getAddress();
 
       // Connect the contract instance to the user signer
       const userRegistrationAsUser = userRegistration.connect(user);
 
-      const isUserRegistered = await userRegistrationAsUser.authenticateUser(hashedPassword);
+      const isUserRegistered = await userRegistrationAsUser.authenticateUser(userAddress, hashedPassword);
       expect(isUserRegistered).to.be.true;
     });
 
     it("Should return false for incorrect password", async function () {
       const wrongHashedPassword = ethers.encodeBytes32String("wrongPassword");
+      const userAddress = await user.getAddress();
 
       // Connect the contract instance to the user signer
       const userRegistrationAsUser = userRegistration.connect(user);
 
-      const isUserRegistered = await userRegistrationAsUser.authenticateUser(wrongHashedPassword);
+      const isUserRegistered = await userRegistrationAsUser.authenticateUser(userAddress, wrongHashedPassword);
       expect(isUserRegistered).to.be.false;
     });
   });

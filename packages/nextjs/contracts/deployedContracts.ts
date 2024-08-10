@@ -6,11 +6,206 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
+    PasswordManager: {
+      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "userRegistrationAddress",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+          ],
+          name: "PasswordDeleted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+          ],
+          name: "PasswordStored",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+          ],
+          name: "PasswordUpdated",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "index",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "deletePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "getPasswords",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "userName",
+                  type: "string",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "hashedPassword",
+                  type: "bytes32",
+                },
+              ],
+              internalType: "struct PasswordManager.PasswordData[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "userName",
+              type: "string",
+            },
+            {
+              internalType: "bytes32",
+              name: "hashedPassword",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "storePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "index",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "userName",
+              type: "string",
+            },
+            {
+              internalType: "bytes32",
+              name: "newHashedPassword",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "updatePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {},
+    },
     UserRegistration: {
       address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
       abi: [
         {
-          inputs: [],
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
           stateMutability: "nonpayable",
           type: "constructor",
         },
@@ -42,6 +237,11 @@ const deployedContracts = {
         },
         {
           inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
             {
               internalType: "bytes32",
               name: "hashedPassword",
