@@ -29,7 +29,7 @@ describe("UserPasswordManager", function () {
       const userPasswordManagerAsUser = userPasswordManager.connect(user0);
 
       // Register the user
-      await userPasswordManagerAsUser.registerUser(hashedPassword);
+      await userPasswordManagerAsUser.registerUser(hashedPassword, { value: ethers.parseEther("0.01") });
 
       // Check if the user is registered
       const isUserRegistered = await userPasswordManagerAsUser.isUserRegistered(user0.address);
@@ -43,9 +43,9 @@ describe("UserPasswordManager", function () {
       const userPasswordManagerAsUser = userPasswordManager.connect(user0);
 
       // Attempt to register the same user again
-      await expect(userPasswordManagerAsUser.registerUser(hashedPassword)).to.be.revertedWith(
-        "User already registered.",
-      );
+      await expect(
+        userPasswordManagerAsUser.registerUser(hashedPassword, { value: ethers.parseEther("0.01") }),
+      ).to.be.revertedWith("User already registered.");
     });
 
     it("Should allow a registered user to update their password", async function () {
@@ -193,7 +193,7 @@ describe("UserPasswordManager", function () {
       const userPasswordManagerAsUser = userPasswordManager.connect(user2);
 
       // Register the user
-      await userPasswordManagerAsUser.registerUser(hashedPassword);
+      await userPasswordManagerAsUser.registerUser(hashedPassword, { value: ethers.parseEther("0.01") });
 
       // Check if the user is registered
       const isUserRegistered = await userPasswordManagerAsUser.isUserRegistered(user2.address);

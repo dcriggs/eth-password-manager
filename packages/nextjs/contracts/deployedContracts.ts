@@ -203,6 +203,66 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "getAllSharedPasswordsReceived",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "username",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedPassword",
+                  type: "string",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.Password[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getAllSharedPasswordsSent",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "username",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedPassword",
+                  type: "string",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.Password[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "bytes32",
@@ -265,7 +325,43 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          name: "getSharedPasswords",
+          name: "getSharedPasswordsReceived",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "username",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedPassword",
+                  type: "string",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.Password[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+          ],
+          name: "getSharedPasswordsSent",
           outputs: [
             {
               components: [
@@ -348,7 +444,7 @@ const deployedContracts = {
           ],
           name: "registerUser",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
@@ -481,6 +577,13 @@ const deployedContracts = {
           stateMutability: "nonpayable",
           type: "function",
         },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
       ],
       inheritedFunctions: {
         authenticateUser: "contracts/UserPasswordManager.sol",
@@ -493,6 +596,7 @@ const deployedContracts = {
         storePassword: "contracts/UserPasswordManager.sol",
         updatePasswordDetails: "contracts/UserPasswordManager.sol",
         updateRegistrationPassword: "contracts/UserPasswordManager.sol",
+        withdraw: "contracts/UserPasswordManager.sol",
       },
     },
     UserPasswordManager: {
@@ -720,7 +824,7 @@ const deployedContracts = {
           ],
           name: "registerUser",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
@@ -798,6 +902,13 @@ const deployedContracts = {
             },
           ],
           name: "updateRegistrationPassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",

@@ -22,9 +22,15 @@ describe("ShareablePasswordManager", function () {
     await shareablePasswordManager.waitForDeployment();
 
     // Register the users
-    await shareablePasswordManager.connect(owner).registerUser(ethers.encodeBytes32String("password123"));
-    await shareablePasswordManager.connect(user1).registerUser(ethers.encodeBytes32String("password456"));
-    await shareablePasswordManager.connect(user2).registerUser(ethers.encodeBytes32String("password789"));
+    await shareablePasswordManager
+      .connect(owner)
+      .registerUser(ethers.encodeBytes32String("password123"), { value: ethers.parseEther("0.01") });
+    await shareablePasswordManager
+      .connect(user1)
+      .registerUser(ethers.encodeBytes32String("password456"), { value: ethers.parseEther("0.01") });
+    await shareablePasswordManager
+      .connect(user2)
+      .registerUser(ethers.encodeBytes32String("password789"), { value: ethers.parseEther("0.01") });
   });
 
   it("Should allow a user to share a password with another user", async function () {
@@ -36,7 +42,7 @@ describe("ShareablePasswordManager", function () {
     await shareablePasswordManager.connect(owner).sharePassword(user1.address, website, username, encryptedPassword);
 
     // Retrieve the shared passwords for user1
-    const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswords(owner.address);
+    const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswordsReceived(owner.address);
 
     // Ensure the password was shared correctly
     expect(sharedPasswords.length).to.equal(1);
@@ -57,7 +63,7 @@ describe("ShareablePasswordManager", function () {
     await shareablePasswordManager.connect(owner).revokeSharedPassword(user1.address, website, username);
 
     // Retrieve the shared passwords for user1
-    const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswords(owner.address);
+    const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswordsReceived(owner.address);
 
     // Ensure the password was revoked
     expect(sharedPasswords.length).to.equal(0);
@@ -77,7 +83,7 @@ describe("ShareablePasswordManager", function () {
     await shareablePasswordManager.connect(owner).sharePassword(user1.address, website2, username2, encryptedPassword2);
 
     // Get the shared password count
-    const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswords(owner.address);
+    const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswordsReceived(owner.address);
 
     // Verify that both passwords are shared
     expect(sharedPasswords.length).to.equal(2);

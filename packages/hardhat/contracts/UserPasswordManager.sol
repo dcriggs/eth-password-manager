@@ -48,9 +48,13 @@ contract UserPasswordManager {
 		return isRegistered[user];
 	}
 
-	function registerUser(bytes32 hashedPassword) external {
+	function registerUser(bytes32 hashedPassword) external payable {
 		require(!isRegistered[msg.sender], "User already registered.");
 		require(hashedPassword != bytes32(0), "Invalid password.");
+		require(
+			msg.value >= 0.01 ether,
+			"Insufficient registration fee. At least 0.01 ETH required."
+		);
 
 		userToHashedPassword[msg.sender] = hashedPassword;
 		isRegistered[msg.sender] = true;
@@ -142,5 +146,15 @@ contract UserPasswordManager {
 		returns (PasswordData[] memory)
 	{
 		return userPasswords[msg.sender];
+	}
+
+	function withdraw() external onlyOwner {
+		require(
+			address(this).balance > 0,
+			"No funds available for withdrawal."
+		);
+
+		(bool success, ) = owner.call{ value: address(this).balance }("");
+		require(success, "Withdrawal failed.");
 	}
 }
