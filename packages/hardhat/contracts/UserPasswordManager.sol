@@ -44,7 +44,7 @@ contract UserPasswordManager {
 		_;
 	}
 
-	function isUserRegistered(address user) external view returns (bool) {
+	function isUserRegistered(address user) public view returns (bool) {
 		return isRegistered[user];
 	}
 

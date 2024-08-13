@@ -6,6 +6,495 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
+    ShareablePasswordManager: {
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+          ],
+          name: "PasswordDeleted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+          ],
+          name: "PasswordDetailsUpdated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+          ],
+          name: "PasswordShared",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+          ],
+          name: "PasswordStored",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "RegistrationUpdated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+          ],
+          name: "SharedPasswordRevoked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "UserRegistered",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "authenticateUser",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "index",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "deletePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "getPasswords",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "userName",
+                  type: "string",
+                },
+                {
+                  internalType: "bytes32",
+                  name: "hashedPassword",
+                  type: "bytes32",
+                },
+              ],
+              internalType: "struct UserPasswordManager.PasswordData[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+          ],
+          name: "getSharedPasswordCount",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "getSharedPasswords",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "username",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedPassword",
+                  type: "string",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.Password[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "greeting",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "isUserRegistered",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "hashedPassword",
+              type: "bytes32",
+            },
+          ],
+          name: "registerUser",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+          ],
+          name: "revokeSharedPassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "username",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "encryptedPassword",
+              type: "string",
+            },
+          ],
+          name: "sharePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "userName",
+              type: "string",
+            },
+            {
+              internalType: "bytes32",
+              name: "hashedPassword",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "storePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "index",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "userName",
+              type: "string",
+            },
+            {
+              internalType: "bytes32",
+              name: "newHashedPassword",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+          ],
+          name: "updatePasswordDetails",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "authenticationHash",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "newHashedPassword",
+              type: "bytes32",
+            },
+          ],
+          name: "updateRegistrationPassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        authenticateUser: "contracts/UserPasswordManager.sol",
+        deletePassword: "contracts/UserPasswordManager.sol",
+        getPasswords: "contracts/UserPasswordManager.sol",
+        greeting: "contracts/UserPasswordManager.sol",
+        isUserRegistered: "contracts/UserPasswordManager.sol",
+        owner: "contracts/UserPasswordManager.sol",
+        registerUser: "contracts/UserPasswordManager.sol",
+        storePassword: "contracts/UserPasswordManager.sol",
+        updatePasswordDetails: "contracts/UserPasswordManager.sol",
+        updateRegistrationPassword: "contracts/UserPasswordManager.sol",
+      },
+    },
     UserPasswordManager: {
       address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       abi: [

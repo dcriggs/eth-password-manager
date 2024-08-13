@@ -132,6 +132,7 @@ describe("UserPasswordManager", function () {
       // Retrieve updated password
       const storedPasswords = await userPasswordManagerAsUser.getPasswords(hashedAuthPassword);
 
+      expect(storedPasswords.length).to.equal(2);
       expect(storedPasswords[0].hashedPassword).to.equal(updatedPassword);
     });
 
@@ -150,6 +151,35 @@ describe("UserPasswordManager", function () {
           newHashedPassword,
         ),
       ).to.be.revertedWith("User is not registered.");
+    });
+
+    it("Should allow a registered user to delete a stored password", async function () {
+      const password1 = ethers.encodeBytes32String("password123");
+      const password2 = ethers.encodeBytes32String("password456");
+      const website1 = "example.com";
+      const website2 = "anotherwebsite.com";
+      const userName1 = "user@example.com";
+      const userName2 = "user@anotherwebsite.com";
+      const hashedAuthPassword = ethers.encodeBytes32String("securePassword123");
+
+      // Connect the contract instance to the user0 signer
+      const userPasswordManagerAsUser = userPasswordManager.connect(user0);
+
+      // Store multiple passwords
+      await userPasswordManagerAsUser.storePassword(website1, userName1, password1, hashedAuthPassword);
+      await userPasswordManagerAsUser.storePassword(website2, userName2, password2, hashedAuthPassword);
+
+      // Delete the first password (index 0)
+      await userPasswordManagerAsUser.deletePassword(0, hashedAuthPassword);
+
+      // Retrieve remaining passwords
+      const storedPasswords = await userPasswordManagerAsUser.getPasswords(hashedAuthPassword);
+
+      // Expect the remaining password to be the second one (password2)
+      expect(storedPasswords.length).to.equal(3);
+      expect(storedPasswords[0].hashedPassword).to.equal(password2);
+      expect(storedPasswords[0].website).to.equal(website2);
+      expect(storedPasswords[0].userName).to.equal(userName2);
     });
   });
 
