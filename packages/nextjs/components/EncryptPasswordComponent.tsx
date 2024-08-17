@@ -55,9 +55,16 @@ const EncryptPasswordComponent: React.FC = () => {
   async function handleEncryptAndDecrypt() {
     const publicKey = await getPublicKey();
     if (publicKey) {
-      const password = "my_secure_password";
+      const password = JSON.stringify({
+        username: "test",
+        password: "testing",
+        website: "test.com",
+      });
+      //const password = "my_secure_password";
+      //const password = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
       const encryptedData = encryptPassword(publicKey, password);
       setEncryptedData(JSON.stringify(encryptedData));
+      console.log(encryptedData);
 
       // Simulate storing on blockchain (replace this with actual blockchain call)
       // storeOnBlockchain(encryptedData);
@@ -70,21 +77,23 @@ const EncryptPasswordComponent: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="items-center">
       <h2>Encrypt and Decrypt Password</h2>
-      <button onClick={handleEncryptAndDecrypt}>Encrypt and Decrypt Password</button>
-
+      <br />
+      <br />
+      <button onClick={handleEncryptAndDecrypt}>Click to Start the Test</button>
+      <br />
       {encryptedData && (
         <div>
           <h3>Encrypted Data:</h3>
-          <pre>{encryptedData}</pre>
+          <input defaultValue={encryptedData}></input>
         </div>
       )}
 
       {decryptedPassword && (
         <div>
           <h3>Decrypted Password:</h3>
-          <pre>{decryptedPassword}</pre>
+          <input defaultValue={decryptedPassword}></input>
         </div>
       )}
     </div>

@@ -4,37 +4,23 @@ pragma solidity ^0.8.0;
 import "./UserPasswordManager.sol";
 
 contract ShareablePasswordManager is UserPasswordManager {
-	// Struct to hold password details
-	struct Password {
-		string website;
-		string username;
-		string encryptedPassword;
-	}
-
-	// Mappings to store passwords for each user
-	mapping(address => Password[]) private passwords;
+	// Mappings to store shared passwords for each user
 	mapping(address => address[]) private recipients;
 	mapping(address => address[]) private senders;
 	mapping(address => uint256) private sentPasswordCount;
 	mapping(address => uint256) private receivedPasswordCount;
 
 	// Mapping to track which passwords a user has shared with others
-	mapping(address => mapping(address => Password[])) private sharedPasswords;
+	mapping(address => mapping(address => PasswordData[]))
+		private sharedPasswords;
 
 	// Event emitted when a password is shared
-	event PasswordShared(
-		address indexed sender,
-		address indexed recipient,
-		string website,
-		string username
-	);
+	event PasswordShared(address indexed sender, address indexed recipient);
 
 	// Event emitted when a shared password is revoked
 	event SharedPasswordRevoked(
 		address indexed sender,
-		address indexed recipient,
-		string website,
-		string username
+		address indexed recipient
 	);
 
 	constructor(address _owner) UserPasswordManager(_owner) {}
@@ -42,39 +28,121 @@ contract ShareablePasswordManager is UserPasswordManager {
 	// Function to share a password with another registered user
 	function sharePassword(
 		address recipient,
-		string memory website,
-		string memory username,
-		string memory encryptedPassword
+		string memory name,
+		string memory encryptedDataHash
 	) external onlyRegistered {
 		// Ensure the recipient is a registered user
 		require(isUserRegistered(recipient), "Recipient is not registered.");
+		require(recipient != msg.sender, "Cannot share with same address.");
 
-		// Create the Password struct and add it to the recipient's shared passwords
-		Password memory newPassword = Password(
-			website,
-			username,
-			encryptedPassword
-		);
+		// Create the PasswordData struct and add it to the recipient's shared passwords
+		PasswordData memory newPassword = PasswordData(name, encryptedDataHash);
 		sharedPasswords[msg.sender][recipient].push(newPassword);
+
 		sentPasswordCount[msg.sender]++;
 		receivedPasswordCount[recipient]++;
 
+		// Check if the sender is already in the recipient's senders list
+		bool senderExists = false;
+		for (uint256 i = 0; i < senders[recipient].length; i++) {
+			if (senders[recipient][i] == msg.sender) {
+				senderExists = true;
+				break;
+			}
+		}
+		if (!senderExists) {
+			senders[recipient].push(msg.sender);
+		}
+
+		// Check if the recipient is already in the sender's recipients list
+		bool recipientExists = false;
+		for (uint256 i = 0; i < recipients[msg.sender].length; i++) {
+			if (recipients[msg.sender][i] == recipient) {
+				recipientExists = true;
+				break;
+			}
+		}
+		if (!recipientExists) {
+			recipients[msg.sender].push(recipient);
+		}
+
 		// Emit the event
-		emit PasswordShared(msg.sender, recipient, website, username);
+		emit PasswordShared(msg.sender, recipient);
 	}
 
-	// Function to retrieve shared passwords that have been received from a user
-	function getSharedPasswordsReceived(
-		address sender
-	) external view onlyRegistered returns (Password[] memory) {
-		return sharedPasswords[sender][msg.sender];
+	// Function to revoke a shared password
+	function revokeSharedPassword(
+		address recipient,
+		string memory name,
+		string memory encryptedDataHash
+	) external onlyRegistered {
+		// Find the password and remove it from the recipient's shared passwords
+		PasswordData[] storage recipientPasswords = sharedPasswords[msg.sender][
+			recipient
+		];
+		bool anyRemoved;
+		for (uint256 i = 0; i < recipientPasswords.length; i++) {
+			if (
+				keccak256(abi.encodePacked(recipientPasswords[i].name)) ==
+				keccak256(abi.encodePacked(name)) &&
+				keccak256(
+					abi.encodePacked(recipientPasswords[i].encryptedDataHash)
+				) ==
+				keccak256(abi.encodePacked(encryptedDataHash))
+			) {
+				// Remove the password by swapping it with the last element and then popping it
+				recipientPasswords[i] = recipientPasswords[
+					recipientPasswords.length - 1
+				];
+				recipientPasswords.pop();
+				sentPasswordCount[msg.sender]--;
+				receivedPasswordCount[recipient]--;
+
+				// If no passwords are left, update the senders and recipients mappings
+				if (recipientPasswords.length == 0) {
+					// Remove sender from recipient's senders list
+					removeAddressFromList(senders[recipient], msg.sender);
+					// Remove recipient from sender's recipients list
+					removeAddressFromList(recipients[msg.sender], recipient);
+				}
+
+				anyRemoved = true;
+
+				// Emit the event
+				emit SharedPasswordRevoked(msg.sender, recipient);
+				break;
+			}
+		}
+
+		if (!anyRemoved) revert("No matching password found.");
+	}
+
+	// Helper function to remove an address from an array
+	function removeAddressFromList(
+		address[] storage list,
+		address addrToRemove
+	) internal {
+		for (uint256 i = 0; i < list.length; i++) {
+			if (list[i] == addrToRemove) {
+				list[i] = list[list.length - 1];
+				list.pop();
+				break;
+			}
+		}
 	}
 
 	// Function to retrieve shared passwords that have been sent to a user
 	function getSharedPasswordsSent(
 		address recipient
-	) external view onlyRegistered returns (Password[] memory) {
+	) external view onlyRegistered returns (PasswordData[] memory) {
 		return sharedPasswords[msg.sender][recipient];
+	}
+
+	// Function to retrieve shared passwords that have been received from a user
+	function getSharedPasswordsReceived(
+		address sender
+	) external view onlyRegistered returns (PasswordData[] memory) {
+		return sharedPasswords[sender][msg.sender];
 	}
 
 	// Function to retrieve all shared passwords sent by the caller
@@ -82,20 +150,22 @@ contract ShareablePasswordManager is UserPasswordManager {
 		external
 		view
 		onlyRegistered
-		returns (Password[] memory)
+		returns (PasswordData[] memory)
 	{
 		// Determine the total number of passwords sent
 		uint256 totalSentPasswords = sentPasswordCount[msg.sender];
 
 		// Create an array to store the sent passwords
-		Password[] memory allSentPasswords = new Password[](totalSentPasswords);
+		PasswordData[] memory allSentPasswords = new PasswordData[](
+			totalSentPasswords
+		);
 
 		uint256 index = 0;
-		address[] memory recipientsList = recipients[msg.sender]; // This should be a state variable storing recipients
+		address[] memory recipientsList = recipients[msg.sender];
 
 		for (uint256 i = 0; i < recipientsList.length; i++) {
 			address recipient = recipientsList[i];
-			Password[] memory sentPasswords = sharedPasswords[msg.sender][
+			PasswordData[] memory sentPasswords = sharedPasswords[msg.sender][
 				recipient
 			];
 
@@ -113,22 +183,22 @@ contract ShareablePasswordManager is UserPasswordManager {
 		external
 		view
 		onlyRegistered
-		returns (Password[] memory)
+		returns (PasswordData[] memory)
 	{
 		// Determine the total number of passwords received
 		uint256 totalReceivedPasswords = receivedPasswordCount[msg.sender];
 
 		// Create an array to store the received passwords
-		Password[] memory allReceivedPasswords = new Password[](
+		PasswordData[] memory allReceivedPasswords = new PasswordData[](
 			totalReceivedPasswords
 		);
 
 		uint256 index = 0;
-		address[] memory sendersList = senders[msg.sender]; // This should be a state variable storing senders
+		address[] memory sendersList = senders[msg.sender];
 
 		for (uint256 i = 0; i < sendersList.length; i++) {
 			address sender = sendersList[i];
-			Password[] memory receivedPasswords = sharedPasswords[sender][
+			PasswordData[] memory receivedPasswords = sharedPasswords[sender][
 				msg.sender
 			];
 
@@ -139,49 +209,5 @@ contract ShareablePasswordManager is UserPasswordManager {
 		}
 
 		return allReceivedPasswords;
-	}
-
-	// Function to revoke a shared password
-	function revokeSharedPassword(
-		address recipient,
-		string memory website,
-		string memory username
-	) external onlyRegistered {
-		// Find the password and remove it from the recipient's shared passwords
-		Password[] storage recipientPasswords = sharedPasswords[msg.sender][
-			recipient
-		];
-		for (uint i = 0; i < recipientPasswords.length; i++) {
-			if (
-				keccak256(abi.encodePacked(recipientPasswords[i].website)) ==
-				keccak256(abi.encodePacked(website)) &&
-				keccak256(abi.encodePacked(recipientPasswords[i].username)) ==
-				keccak256(abi.encodePacked(username))
-			) {
-				// Remove the password by swapping it with the last element and then popping it
-				recipientPasswords[i] = recipientPasswords[
-					recipientPasswords.length - 1
-				];
-				recipientPasswords.pop();
-				sentPasswordCount[msg.sender]--;
-				receivedPasswordCount[recipient]--;
-
-				// Emit the event
-				emit SharedPasswordRevoked(
-					msg.sender,
-					recipient,
-					website,
-					username
-				);
-				break;
-			}
-		}
-	}
-
-	// Function to get the count of passwords shared with a specific recipient
-	function getSharedPasswordCount(
-		address recipient
-	) external view onlyRegistered returns (uint256) {
-		return sharedPasswords[msg.sender][recipient].length;
 	}
 }

@@ -29,12 +29,6 @@ const deployedContracts = {
               name: "user",
               type: "address",
             },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
-            },
           ],
           name: "PasswordDeleted",
           type: "event",
@@ -47,12 +41,6 @@ const deployedContracts = {
               internalType: "address",
               name: "user",
               type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
             },
           ],
           name: "PasswordDetailsUpdated",
@@ -73,18 +61,6 @@ const deployedContracts = {
               name: "recipient",
               type: "address",
             },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "username",
-              type: "string",
-            },
           ],
           name: "PasswordShared",
           type: "event",
@@ -98,27 +74,8 @@ const deployedContracts = {
               name: "user",
               type: "address",
             },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
-            },
           ],
           name: "PasswordStored",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "RegistrationUpdated",
           type: "event",
         },
         {
@@ -135,18 +92,6 @@ const deployedContracts = {
               internalType: "address",
               name: "recipient",
               type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "username",
-              type: "string",
             },
           ],
           name: "SharedPasswordRevoked",
@@ -168,33 +113,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
-            },
-          ],
-          name: "authenticateUser",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "index",
               type: "uint256",
-            },
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
             },
           ],
           name: "deletePassword",
@@ -210,21 +131,16 @@ const deployedContracts = {
               components: [
                 {
                   internalType: "string",
-                  name: "website",
+                  name: "name",
                   type: "string",
                 },
                 {
                   internalType: "string",
-                  name: "username",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "encryptedPassword",
+                  name: "encryptedDataHash",
                   type: "string",
                 },
               ],
-              internalType: "struct ShareablePasswordManager.Password[]",
+              internalType: "struct UserPasswordManager.PasswordData[]",
               name: "",
               type: "tuple[]",
             },
@@ -240,54 +156,13 @@ const deployedContracts = {
               components: [
                 {
                   internalType: "string",
-                  name: "website",
+                  name: "name",
                   type: "string",
                 },
                 {
                   internalType: "string",
-                  name: "username",
+                  name: "encryptedDataHash",
                   type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "encryptedPassword",
-                  type: "string",
-                },
-              ],
-              internalType: "struct ShareablePasswordManager.Password[]",
-              name: "",
-              type: "tuple[]",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
-            },
-          ],
-          name: "getPasswords",
-          outputs: [
-            {
-              components: [
-                {
-                  internalType: "string",
-                  name: "website",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "userName",
-                  type: "string",
-                },
-                {
-                  internalType: "bytes32",
-                  name: "hashedPassword",
-                  type: "bytes32",
                 },
               ],
               internalType: "struct UserPasswordManager.PasswordData[]",
@@ -299,19 +174,25 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "recipient",
-              type: "address",
-            },
-          ],
-          name: "getSharedPasswordCount",
+          inputs: [],
+          name: "getPasswords",
           outputs: [
             {
-              internalType: "uint256",
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedDataHash",
+                  type: "string",
+                },
+              ],
+              internalType: "struct UserPasswordManager.PasswordData[]",
               name: "",
-              type: "uint256",
+              type: "tuple[]",
             },
           ],
           stateMutability: "view",
@@ -331,21 +212,16 @@ const deployedContracts = {
               components: [
                 {
                   internalType: "string",
-                  name: "website",
+                  name: "name",
                   type: "string",
                 },
                 {
                   internalType: "string",
-                  name: "username",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "encryptedPassword",
+                  name: "encryptedDataHash",
                   type: "string",
                 },
               ],
-              internalType: "struct ShareablePasswordManager.Password[]",
+              internalType: "struct UserPasswordManager.PasswordData[]",
               name: "",
               type: "tuple[]",
             },
@@ -367,21 +243,16 @@ const deployedContracts = {
               components: [
                 {
                   internalType: "string",
-                  name: "website",
+                  name: "name",
                   type: "string",
                 },
                 {
                   internalType: "string",
-                  name: "username",
-                  type: "string",
-                },
-                {
-                  internalType: "string",
-                  name: "encryptedPassword",
+                  name: "encryptedDataHash",
                   type: "string",
                 },
               ],
-              internalType: "struct ShareablePasswordManager.Password[]",
+              internalType: "struct UserPasswordManager.PasswordData[]",
               name: "",
               type: "tuple[]",
             },
@@ -390,8 +261,14 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
-          name: "greeting",
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "getUserPublicKey",
           outputs: [
             {
               internalType: "string",
@@ -437,9 +314,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "bytes32",
-              name: "hashedPassword",
-              type: "bytes32",
+              internalType: "string",
+              name: "publicKey",
+              type: "string",
             },
           ],
           name: "registerUser",
@@ -456,12 +333,12 @@ const deployedContracts = {
             },
             {
               internalType: "string",
-              name: "website",
+              name: "name",
               type: "string",
             },
             {
               internalType: "string",
-              name: "username",
+              name: "encryptedDataHash",
               type: "string",
             },
           ],
@@ -479,17 +356,12 @@ const deployedContracts = {
             },
             {
               internalType: "string",
-              name: "website",
+              name: "name",
               type: "string",
             },
             {
               internalType: "string",
-              name: "username",
-              type: "string",
-            },
-            {
-              internalType: "string",
-              name: "encryptedPassword",
+              name: "encryptedDataHash",
               type: "string",
             },
           ],
@@ -502,23 +374,13 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "string",
-              name: "website",
+              name: "name",
               type: "string",
             },
             {
               internalType: "string",
-              name: "userName",
+              name: "encryptedDataHash",
               type: "string",
-            },
-            {
-              internalType: "bytes32",
-              name: "hashedPassword",
-              type: "bytes32",
-            },
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
             },
           ],
           name: "storePassword",
@@ -535,44 +397,16 @@ const deployedContracts = {
             },
             {
               internalType: "string",
-              name: "website",
+              name: "name",
               type: "string",
             },
             {
               internalType: "string",
-              name: "userName",
+              name: "encryptedDataHash",
               type: "string",
-            },
-            {
-              internalType: "bytes32",
-              name: "newHashedPassword",
-              type: "bytes32",
-            },
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
             },
           ],
           name: "updatePasswordDetails",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
-            },
-            {
-              internalType: "bytes32",
-              name: "newHashedPassword",
-              type: "bytes32",
-            },
-          ],
-          name: "updateRegistrationPassword",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -586,16 +420,14 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {
-        authenticateUser: "contracts/UserPasswordManager.sol",
         deletePassword: "contracts/UserPasswordManager.sol",
         getPasswords: "contracts/UserPasswordManager.sol",
-        greeting: "contracts/UserPasswordManager.sol",
+        getUserPublicKey: "contracts/UserPasswordManager.sol",
         isUserRegistered: "contracts/UserPasswordManager.sol",
         owner: "contracts/UserPasswordManager.sol",
         registerUser: "contracts/UserPasswordManager.sol",
         storePassword: "contracts/UserPasswordManager.sol",
         updatePasswordDetails: "contracts/UserPasswordManager.sol",
-        updateRegistrationPassword: "contracts/UserPasswordManager.sol",
         withdraw: "contracts/UserPasswordManager.sol",
       },
     },
@@ -622,12 +454,6 @@ const deployedContracts = {
               name: "user",
               type: "address",
             },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
-            },
           ],
           name: "PasswordDeleted",
           type: "event",
@@ -640,12 +466,6 @@ const deployedContracts = {
               internalType: "address",
               name: "user",
               type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
             },
           ],
           name: "PasswordDetailsUpdated",
@@ -660,27 +480,8 @@ const deployedContracts = {
               name: "user",
               type: "address",
             },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "website",
-              type: "string",
-            },
           ],
           name: "PasswordStored",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "RegistrationUpdated",
           type: "event",
         },
         {
@@ -699,33 +500,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
-            },
-          ],
-          name: "authenticateUser",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
               internalType: "uint256",
               name: "index",
               type: "uint256",
-            },
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
             },
           ],
           name: "deletePassword",
@@ -734,31 +511,20 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
-            },
-          ],
+          inputs: [],
           name: "getPasswords",
           outputs: [
             {
               components: [
                 {
                   internalType: "string",
-                  name: "website",
+                  name: "name",
                   type: "string",
                 },
                 {
                   internalType: "string",
-                  name: "userName",
+                  name: "encryptedDataHash",
                   type: "string",
-                },
-                {
-                  internalType: "bytes32",
-                  name: "hashedPassword",
-                  type: "bytes32",
                 },
               ],
               internalType: "struct UserPasswordManager.PasswordData[]",
@@ -770,8 +536,14 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [],
-          name: "greeting",
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "getUserPublicKey",
           outputs: [
             {
               internalType: "string",
@@ -817,9 +589,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "bytes32",
-              name: "hashedPassword",
-              type: "bytes32",
+              internalType: "string",
+              name: "publicKey",
+              type: "string",
             },
           ],
           name: "registerUser",
@@ -831,23 +603,13 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "string",
-              name: "website",
+              name: "name",
               type: "string",
             },
             {
               internalType: "string",
-              name: "userName",
+              name: "encryptedDataHash",
               type: "string",
-            },
-            {
-              internalType: "bytes32",
-              name: "hashedPassword",
-              type: "bytes32",
-            },
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
             },
           ],
           name: "storePassword",
@@ -864,44 +626,16 @@ const deployedContracts = {
             },
             {
               internalType: "string",
-              name: "website",
+              name: "name",
               type: "string",
             },
             {
               internalType: "string",
-              name: "userName",
+              name: "encryptedDataHash",
               type: "string",
-            },
-            {
-              internalType: "bytes32",
-              name: "newHashedPassword",
-              type: "bytes32",
-            },
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
             },
           ],
           name: "updatePasswordDetails",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "bytes32",
-              name: "authenticationHash",
-              type: "bytes32",
-            },
-            {
-              internalType: "bytes32",
-              name: "newHashedPassword",
-              type: "bytes32",
-            },
-          ],
-          name: "updateRegistrationPassword",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",

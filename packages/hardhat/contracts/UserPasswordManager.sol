@@ -2,32 +2,28 @@
 pragma solidity ^0.8.0;
 
 contract UserPasswordManager {
-	string public greeting =
-		"Testing User Registration and Password Management!";
 	address public owner;
 
 	struct PasswordData {
-		string website;
-		string userName;
-		bytes32 hashedPassword;
+		string name;
+		string encryptedDataHash;
 	}
 
-	mapping(address => bytes32) private userToHashedPassword;
-	mapping(address => bool) private isRegistered;
-	mapping(address => PasswordData[]) private userPasswords;
+	mapping(address => bool) internal isRegistered;
+	mapping(address => string) internal userPublicKeys;
+	mapping(address => PasswordData[]) internal userPasswords;
 
 	event UserRegistered(address indexed user);
-	event RegistrationUpdated(address indexed user);
-	event PasswordStored(address indexed user, string website);
-	event PasswordDetailsUpdated(address indexed user, string website);
-	event PasswordDeleted(address indexed user, string website);
+	event PasswordStored(address indexed user);
+	event PasswordDetailsUpdated(address indexed user);
+	event PasswordDeleted(address indexed user);
 
 	constructor(address _owner) {
 		owner = _owner == address(0) ? msg.sender : _owner; // Default to deployer if _owner is address(0)
 	}
 
 	modifier onlyOwner() {
-		require(msg.sender == owner, "Not the contract owner");
+		require(msg.sender == owner, "Not the contract owner.");
 		_;
 	}
 
@@ -36,96 +32,55 @@ contract UserPasswordManager {
 		_;
 	}
 
-	modifier onlyAuthenticated(bytes32 hashedPassword) {
-		require(
-			userToHashedPassword[msg.sender] == hashedPassword,
-			"Authentication failed."
-		);
-		_;
-	}
-
 	function isUserRegistered(address user) public view returns (bool) {
 		return isRegistered[user];
 	}
 
-	function registerUser(bytes32 hashedPassword) external payable {
+	// Virtual function to allow overriding in child contracts
+	function registerUser(string memory publicKey) external payable virtual {
 		require(!isRegistered[msg.sender], "User already registered.");
-		require(hashedPassword != bytes32(0), "Invalid password.");
 		require(
 			msg.value >= 0.01 ether,
 			"Insufficient registration fee. At least 0.01 ETH required."
 		);
 
-		userToHashedPassword[msg.sender] = hashedPassword;
+		// Call the original registerUser logic from the parent contract
 		isRegistered[msg.sender] = true;
+		userPublicKeys[msg.sender] = publicKey;
 
 		emit UserRegistered(msg.sender);
 	}
 
-	function authenticateUser(
-		bytes32 authenticationHash
-	)
-		external
-		view
-		onlyRegistered
-		onlyAuthenticated(authenticationHash)
-		returns (bool)
-	{
-		return true;
-	}
-
-	function updateRegistrationPassword(
-		bytes32 authenticationHash,
-		bytes32 newHashedPassword
-	) external onlyRegistered onlyAuthenticated(authenticationHash) {
-		require(newHashedPassword != bytes32(0), "Invalid new password.");
-
-		userToHashedPassword[msg.sender] = newHashedPassword;
-
-		emit RegistrationUpdated(msg.sender);
-	}
-
 	function storePassword(
-		string memory website,
-		string memory userName,
-		bytes32 hashedPassword,
-		bytes32 authenticationHash
-	) external onlyRegistered onlyAuthenticated(authenticationHash) {
+		string memory name,
+		string memory encryptedDataHash
+	) external onlyRegistered {
 		PasswordData memory newPasswordData = PasswordData({
-			website: website,
-			userName: userName,
-			hashedPassword: hashedPassword
+			name: name,
+			encryptedDataHash: encryptedDataHash
 		});
 
 		userPasswords[msg.sender].push(newPasswordData);
 
-		emit PasswordStored(msg.sender, website);
+		emit PasswordStored(msg.sender);
 	}
 
 	function updatePasswordDetails(
 		uint index,
-		string memory website,
-		string memory userName,
-		bytes32 newHashedPassword,
-		bytes32 authenticationHash
-	) external onlyRegistered onlyAuthenticated(authenticationHash) {
+		string memory name,
+		string memory encryptedDataHash
+	) external onlyRegistered {
 		require(index < userPasswords[msg.sender].length, "Invalid index.");
 
 		PasswordData storage passwordData = userPasswords[msg.sender][index];
-		passwordData.website = website;
-		passwordData.userName = userName;
-		passwordData.hashedPassword = newHashedPassword;
+		passwordData.name = name;
+		passwordData.encryptedDataHash = encryptedDataHash;
 
-		emit PasswordDetailsUpdated(msg.sender, website);
+		emit PasswordDetailsUpdated(msg.sender);
 	}
 
-	function deletePassword(
-		uint index,
-		bytes32 authenticationHash
-	) external onlyRegistered onlyAuthenticated(authenticationHash) {
+	function deletePassword(uint index) external onlyRegistered {
 		require(index < userPasswords[msg.sender].length, "Invalid index.");
-
-		PasswordData memory passwordData = userPasswords[msg.sender][index];
 
 		// Move the last element into the place to delete
 		userPasswords[msg.sender][index] = userPasswords[msg.sender][
@@ -133,19 +88,22 @@ contract UserPasswordManager {
 		];
 		userPasswords[msg.sender].pop();
 
-		emit PasswordDeleted(msg.sender, passwordData.website);
+		emit PasswordDeleted(msg.sender);
 	}
 
-	function getPasswords(
-		bytes32 authenticationHash
-	)
+	function getPasswords()
 		external
 		view
 		onlyRegistered
-		onlyAuthenticated(authenticationHash)
 		returns (PasswordData[] memory)
 	{
 		return userPasswords[msg.sender];
+	}
+
+	function getUserPublicKey(
+		address user
+	) external view onlyRegistered returns (string memory) {
+		return userPublicKeys[user];
 	}
 
 	function withdraw() external onlyOwner {

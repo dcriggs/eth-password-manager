@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
+//import { Contract } from "ethers";
 
 /**
  * Deploys a contract named "ShareablePasswordManager" using the deployer account and
@@ -36,8 +36,8 @@ const deployShareablePasswordManager: DeployFunction = async function (hre: Hard
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const shareablePasswordManager = await hre.ethers.getContract<Contract>("ShareablePasswordManager");
-  console.log("👋 Initial greeting:", await shareablePasswordManager.greeting());
+  //const shareablePasswordManager = await hre.ethers.getContract<Contract>("ShareablePasswordManager");
+  //console.log("👋 Initial greeting:", await shareablePasswordManager.greeting());
 };
 
 export default deployShareablePasswordManager;

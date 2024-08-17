@@ -34,33 +34,30 @@ describe("ShareablePasswordManager", function () {
   });
 
   it("Should allow a user to share a password with another user", async function () {
-    const website = "example.com";
-    const username = "user1";
-    const encryptedPassword = "encryptedPassword1";
+    const name = "example.com";
+    const encryptedDataHash = "encryptedPassword1";
 
     // Share a password from owner to user1
-    await shareablePasswordManager.connect(owner).sharePassword(user1.address, website, username, encryptedPassword);
+    await shareablePasswordManager.connect(owner).sharePassword(user1.address, name, encryptedDataHash);
 
     // Retrieve the shared passwords for user1
     const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswordsReceived(owner.address);
 
     // Ensure the password was shared correctly
     expect(sharedPasswords.length).to.equal(1);
-    expect(sharedPasswords[0].website).to.equal(website);
-    expect(sharedPasswords[0].username).to.equal(username);
-    expect(sharedPasswords[0].encryptedPassword).to.equal(encryptedPassword);
+    expect(sharedPasswords[0].name).to.equal(name);
+    expect(sharedPasswords[0].encryptedDataHash).to.equal(encryptedDataHash);
   });
 
   it("Should allow a user to revoke a shared password", async function () {
-    const website = "example.com";
-    const username = "user1";
-    const encryptedPassword = "encryptedPassword1";
+    const name = "example.com";
+    const encryptedDataHash = "encryptedPassword1";
 
     // Share a password from owner to user1
-    await shareablePasswordManager.connect(owner).sharePassword(user1.address, website, username, encryptedPassword);
+    await shareablePasswordManager.connect(owner).sharePassword(user1.address, name, encryptedDataHash);
 
     // Revoke the shared password
-    await shareablePasswordManager.connect(owner).revokeSharedPassword(user1.address, website, username);
+    await shareablePasswordManager.connect(owner).revokeSharedPassword(user1.address, name, encryptedDataHash);
 
     // Retrieve the shared passwords for user1
     const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswordsReceived(owner.address);
@@ -70,50 +67,42 @@ describe("ShareablePasswordManager", function () {
   });
 
   it("Should return the correct number of shared passwords", async function () {
-    const website1 = "example1.com";
-    const username1 = "user1";
-    const encryptedPassword1 = "encryptedPassword1";
+    const name1 = "example1.com";
+    const encryptedDataHash1 = "encryptedPassword1";
 
-    const website2 = "example2.com";
-    const username2 = "user2";
-    const encryptedPassword2 = "encryptedPassword2";
+    const name2 = "example2.com";
+    const encryptedDataHash2 = "encryptedPassword2";
 
     // Share two passwords from owner to user1
-    await shareablePasswordManager.connect(owner).sharePassword(user1.address, website1, username1, encryptedPassword1);
-    await shareablePasswordManager.connect(owner).sharePassword(user1.address, website2, username2, encryptedPassword2);
+    await shareablePasswordManager.connect(owner).sharePassword(user1.address, name1, encryptedDataHash1);
+    await shareablePasswordManager.connect(owner).sharePassword(user1.address, name2, encryptedDataHash2);
 
     // Get the shared password count
     const sharedPasswords = await shareablePasswordManager.connect(user1).getSharedPasswordsReceived(owner.address);
 
     // Verify that both passwords are shared
     expect(sharedPasswords.length).to.equal(2);
-    expect(sharedPasswords[0].website).to.equal(website1);
-    expect(sharedPasswords[1].website).to.equal(website2);
+    expect(sharedPasswords[0].name).to.equal(name1);
+    expect(sharedPasswords[1].name).to.equal(name2);
   });
 
   it("Should not allow a non-registered user to share a password", async function () {
-    const website = "example.com";
-    const username = "user3";
-    const encryptedPassword = "encryptedPassword3";
+    const name = "example.com";
+    const encryptedDataHash = "encryptedPassword1";
 
     // Try to share a password from a non-registered user
     await expect(
-      shareablePasswordManager
-        .connect(nonRegisteredUser)
-        .sharePassword(user1.address, website, username, encryptedPassword),
+      shareablePasswordManager.connect(nonRegisteredUser).sharePassword(user1.address, name, encryptedDataHash),
     ).to.be.revertedWith("User is not registered.");
   });
 
   it("Should not allow sharing a password with a non-registered user", async function () {
-    const website = "example.com";
-    const username = "user2";
-    const encryptedPassword = "encryptedPassword2";
+    const name = "example.com";
+    const encryptedDataHash = "encryptedPassword1";
 
     // Try to share a password with a non-registered user
     await expect(
-      shareablePasswordManager
-        .connect(owner)
-        .sharePassword(nonRegisteredUserAddress, website, username, encryptedPassword),
+      shareablePasswordManager.connect(owner).sharePassword(nonRegisteredUserAddress, name, encryptedDataHash),
     ).to.be.revertedWith("Recipient is not registered.");
   });
 });

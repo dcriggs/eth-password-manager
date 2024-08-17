@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
+//import { Contract } from "ethers";
 
 /**
  * Deploys a contract named "UserPasswordManager" using the deployer account and
@@ -36,8 +36,8 @@ const deployUserPasswordManager: DeployFunction = async function (hre: HardhatRu
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const userPasswordManager = await hre.ethers.getContract<Contract>("UserPasswordManager");
-  console.log("👋 Initial greeting:", await userPasswordManager.greeting());
+  //const userPasswordManager = await hre.ethers.getContract<Contract>("UserPasswordManager");
+  //console.log("👋 Initial greeting:", await userPasswordManager.greeting());
 };
 
 export default deployUserPasswordManager;
