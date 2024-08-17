@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import ShareablePasswordManager from "../../../hardhat/artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
 import * as sigUtil from "@metamask/eth-sig-util";
+import { ethers } from "ethers";
 
 const EncryptPasswordComponent: React.FC = () => {
   const [encryptedData, setEncryptedData] = useState<string | null>(null);
@@ -17,6 +19,30 @@ const EncryptPasswordComponent: React.FC = () => {
         return publicKey;
       } catch (error) {
         console.error(error);
+      }
+    } else {
+      console.log("Please install Metamask!");
+    }
+  }
+
+  // Function to register the user with the public key
+  async function registerUser(publicKey: string) {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; // Replace with your contract address
+        const contractABI = ShareablePasswordManager.abi;
+
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        const tx = await contract.registerUser(publicKey, {
+          value: ethers.parseEther("0.01"),
+        });
+
+        await tx.wait();
+        console.log("User registered successfully!");
+      } catch (error) {
+        console.error("Failed to register user:", error);
       }
     } else {
       console.log("Please install Metamask!");
@@ -51,7 +77,7 @@ const EncryptPasswordComponent: React.FC = () => {
     }
   }
 
-  // Example usage: Encrypt and then decrypt a password
+  // Example usage: Encrypt, register user, and then decrypt a password
   async function handleEncryptAndDecrypt() {
     const publicKey = await getPublicKey();
     if (publicKey) {
@@ -60,8 +86,11 @@ const EncryptPasswordComponent: React.FC = () => {
         password: "testing",
         website: "test.com",
       });
-      //const password = "my_secure_password";
-      //const password = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+      // Register the user with the public key
+      await registerUser(publicKey);
+
+      // Encrypt the password
       const encryptedData = encryptPassword(publicKey, password);
       setEncryptedData(JSON.stringify(encryptedData));
       console.log(encryptedData);
@@ -78,10 +107,18 @@ const EncryptPasswordComponent: React.FC = () => {
 
   return (
     <div className="items-center">
-      <h2>Encrypt and Decrypt Password</h2>
+      <h2>Encrypt and Decrypt Password Test:</h2>
+      <ul>
+        <li>1. Request public key</li>
+        <li>2. Register user</li>
+        <li>3. Display encrypted data</li>
+        <li>4. Request decryption</li>
+        <li>5. Display decrypted data</li>
+      </ul>
       <br />
-      <br />
-      <button onClick={handleEncryptAndDecrypt}>Click to Start the Test</button>
+      <button onClick={handleEncryptAndDecrypt}>
+        <strong>Click Here to Start the Test</strong>
+      </button>
       <br />
       {encryptedData && (
         <div>
