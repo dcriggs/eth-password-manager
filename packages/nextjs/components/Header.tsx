@@ -20,6 +20,18 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/",
   },
   {
+    label: "My Passwords",
+    href: "/mypasswords",
+  },
+  {
+    label: "Shared with Me",
+    href: "/sharedin",
+  },
+  {
+    label: "Shared with Others",
+    href: "/sharedout",
+  },
+  {
     label: "Debug Contracts",
     href: "/debug",
     icon: <BugAntIcon className="h-4 w-4" />,

@@ -4,6 +4,13 @@ import * as sigUtil from "@metamask/eth-sig-util";
 import { ethers } from "ethers";
 
 const EncryptPasswordComponent: React.FC = () => {
+  const [dataToEncrypt, setDataToEncrypt] = useState<string | null>(
+    JSON.stringify({
+      username: "test",
+      password: "testing",
+      website: "test.com",
+    }),
+  );
   const [encryptedData, setEncryptedData] = useState<string | null>(null);
   const [decryptedPassword, setDecryptedPassword] = useState<string | null>(null);
 
@@ -50,7 +57,7 @@ const EncryptPasswordComponent: React.FC = () => {
   }
 
   // Function to encrypt the password
-  function encryptPassword(publicKey: string, password: string) {
+  function encryptPassword(publicKey: string, password: string | null) {
     const encryptedData = sigUtil.encrypt({
       publicKey: publicKey,
       data: password,
@@ -81,17 +88,11 @@ const EncryptPasswordComponent: React.FC = () => {
   async function handleEncryptAndDecrypt() {
     const publicKey = await getPublicKey();
     if (publicKey) {
-      const password = JSON.stringify({
-        username: "test",
-        password: "testing",
-        website: "test.com",
-      });
-
       // Register the user with the public key
       await registerUser(publicKey);
 
       // Encrypt the password
-      const encryptedData = encryptPassword(publicKey, password);
+      const encryptedData = encryptPassword(publicKey, dataToEncrypt);
       setEncryptedData(JSON.stringify(encryptedData));
       console.log(encryptedData);
 
@@ -105,32 +106,65 @@ const EncryptPasswordComponent: React.FC = () => {
     }
   }
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDataToEncrypt(event.target.value);
+  };
+
+  const handleEncryptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEncryptedData(event.target.value);
+  };
+
+  const handleDecryptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDecryptedPassword(event.target.value);
+  };
+
   return (
     <div className="items-center">
       <h2>Encrypt and Decrypt Password Test:</h2>
       <ul>
-        <li>1. Request public key</li>
-        <li>2. Register user</li>
-        <li>3. Display encrypted data</li>
-        <li>4. Request decryption</li>
-        <li>5. Display decrypted data</li>
+        <li>1. Input data to encrypt</li>
+        <li>2. Request public key</li>
+        <li>3. Register user</li>
+        <li>4. Display encrypted data</li>
+        <li>5. Request decryption</li>
+        <li>6. Display decrypted data</li>
       </ul>
       <br />
-      <button onClick={handleEncryptAndDecrypt}>
-        <strong>Click Here to Start the Test</strong>
+      <br />
+      {dataToEncrypt && (
+        <div>
+          <h3>Input test data here:</h3>
+          <input type="text" value={dataToEncrypt} onChange={handleInputChange} className="input w-full max-w-xs" />
+        </div>
+      )}
+      <br />
+      <br />
+      <button className="btn btn-accent" onClick={handleEncryptAndDecrypt}>
+        Click Here to Start the Test
       </button>
+      <br />
       <br />
       {encryptedData && (
         <div>
           <h3>Encrypted Data:</h3>
-          <input defaultValue={encryptedData}></input>
+          <input type="text" value={encryptedData} onChange={handleEncryptChange} className="input w-full max-w-xs" />
+          <p>
+            Pretend we just stored this encrypted data on IPFS and <br></br> stored the encryptedDataHash in the
+            user&apos;s passwords.
+          </p>
         </div>
       )}
-
+      <br />
+      <br />
       {decryptedPassword && (
         <div>
           <h3>Decrypted Password:</h3>
-          <input defaultValue={decryptedPassword}></input>
+          <input
+            type="text"
+            value={decryptedPassword}
+            onChange={handleDecryptChange}
+            className="input w-full max-w-xs"
+          />
         </div>
       )}
     </div>

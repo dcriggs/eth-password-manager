@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ShareablePasswordManager from "../../../hardhat/artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
 import "./PasswordManagement.css";
 import PasswordTable from "./PasswordTable";
@@ -68,15 +68,23 @@ const PasswordManagement: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    getPasswords();
+  }, []);
+
   return (
     <div className="password-management-container">
       <h2>Password Management</h2>
 
       <div className="password-table-container">
-        <h3>Your Passwords</h3>
         <button className="btn" onClick={getPasswords}>
           Get Passwords
         </button>
+        <br></br>
+        <br></br>
+        <br></br>
+        <div className="divider"></div>
+        <h3>My Passwords</h3>
         <PasswordTable
           passwords={passwords}
           onUpdate={(name, encryptedDataHash) => {
@@ -87,9 +95,12 @@ const PasswordManagement: React.FC = () => {
           }}
         />
       </div>
-
+      <br></br>
+      <br></br>
+      <br></br>
       <div className="password-table-container">
-        <h3>Shared Passwords Sent</h3>
+        <div className="divider"></div>
+        <h3>Shared with Others</h3>
         <PasswordTable
           passwords={dummySharedPasswordsSent}
           onRevoke={(name, encryptedDataHash) => {
@@ -97,9 +108,12 @@ const PasswordManagement: React.FC = () => {
           }}
         />
       </div>
-
+      <br></br>
+      <br></br>
+      <br></br>
       <div className="password-table-container">
-        <h3>Shared Passwords Received</h3>
+        <div className="divider"></div>
+        <h3>Shared with Me</h3>
         <PasswordTable passwords={dummySharedPasswordsReceived} />
       </div>
     </div>
