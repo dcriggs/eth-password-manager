@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import ShareablePasswordManager from "../../../hardhat/artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
 import { ethers } from "ethers";
 
-const MyPasswordsPage = () => {
-  const [myPasswords, setMyPasswords] = useState<any[]>([]);
+const SharedWithOthersPage = () => {
+  const [sharedPasswords, setSharedPasswords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchMyPasswords = async () => {
+    const fetchSharedPasswords = async () => {
       if (window.ethereum) {
         try {
           const provider = new ethers.BrowserProvider(window.ethereum);
@@ -20,30 +20,23 @@ const MyPasswordsPage = () => {
           const contractABI = ShareablePasswordManager.abi;
 
           const contract = new ethers.Contract(contractAddress, contractABI, signer);
-          const passwords = await contract.getPasswords();
+          const shared = await contract.getAllSharedPasswordsSent();
 
-          const passwordData = passwords.map(([name, encryptedDataHash]: [string, string]) => ({
-            name,
-            encryptedDataHash,
-          }));
-
-          setMyPasswords(passwordData);
+          setSharedPasswords(shared);
         } catch (error) {
-          console.error("Failed to fetch your passwords:", error);
+          console.error("Failed to fetch shared passwords:", error);
         }
-      } else {
-        console.error("Please install Metamask!");
       }
     };
 
-    fetchMyPasswords();
+    fetchSharedPasswords();
   }, []);
 
   const handleViewPassword = (id: string) => {
-    router.push(`/mypasswords/password/${id}`);
+    router.push(`/password/${id}`);
   };
 
-  const handleDeletePassword = async (id: string) => {
+  const handleRevokePassword = async (id: string) => {
     if (!window.ethereum) return;
 
     setLoading(true);
@@ -55,14 +48,14 @@ const MyPasswordsPage = () => {
 
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      // Assuming you have a function `deletePassword` in your contract to delete a password
-      const tx = await contract.deletePassword(id); // Replace with actual parameters later
+      // Assuming you have a function `revokeSharedPassword` in your contract to revoke a password
+      const tx = await contract.revokeSharedPassword(id); // Replace with actual parameters later
       await tx.wait();
 
-      // Refresh the passwords list after deleting
-      setMyPasswords(prev => prev.filter(password => password.encryptedDataHash !== id));
+      // Refresh the shared passwords list after revoking
+      setSharedPasswords(prev => prev.filter(password => password.id !== id));
     } catch (error) {
-      console.error("Failed to delete password:", error);
+      console.error("Failed to revoke password:", error);
     } finally {
       setLoading(false);
     }
@@ -70,24 +63,25 @@ const MyPasswordsPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">My Passwords</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Passwords Shared With Others</h1>
       <div className="max-w-2xl mx-auto">
-        {myPasswords.length === 0 ? (
-          <p className="text-center">No passwords stored yet.</p>
+        {sharedPasswords.length === 0 ? (
+          <p className="text-center">No passwords shared with others yet.</p>
         ) : (
-          myPasswords.map(password => (
+          sharedPasswords.map(password => (
             <div key={password.encryptedDataHash} className="bg-base-100 shadow-md rounded-lg p-4 mb-4">
               <h2 className="font-bold">{password.name}</h2>
+              <p>Shared with: {password.sharedWith}</p>
               <div className="flex justify-between mt-4">
                 <button color="primary" onClick={() => handleViewPassword(password.encryptedDataHash)}>
                   View Details
                 </button>
                 <button
                   color="error"
-                  onClick={() => handleDeletePassword(password.encryptedDataHash)}
+                  onClick={() => handleRevokePassword(password.encryptedDataHash)}
                   disabled={loading}
                 >
-                  {loading ? "Deleting..." : "Delete"}
+                  {loading ? "Revoking..." : "Revoke"}
                 </button>
               </div>
             </div>
@@ -98,4 +92,4 @@ const MyPasswordsPage = () => {
   );
 };
 
-export default MyPasswordsPage;
+export default SharedWithOthersPage;

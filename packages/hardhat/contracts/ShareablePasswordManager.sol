@@ -4,6 +4,13 @@ pragma solidity ^0.8.0;
 import "./UserPasswordManager.sol";
 
 contract ShareablePasswordManager is UserPasswordManager {
+	struct SharedPasswordData {
+		string name;
+		string encryptedDataHash;
+		address sharedBy;
+		address sharedWith;
+	}
+
 	// Mappings to store shared passwords for each user
 	mapping(address => address[]) private recipients;
 	mapping(address => address[]) private senders;
@@ -11,7 +18,7 @@ contract ShareablePasswordManager is UserPasswordManager {
 	mapping(address => uint256) private receivedPasswordCount;
 
 	// Mapping to track which passwords a user has shared with others
-	mapping(address => mapping(address => PasswordData[]))
+	mapping(address => mapping(address => SharedPasswordData[]))
 		private sharedPasswords;
 
 	// Event emitted when a password is shared
@@ -35,8 +42,13 @@ contract ShareablePasswordManager is UserPasswordManager {
 		require(isUserRegistered(recipient), "Recipient is not registered.");
 		require(recipient != msg.sender, "Cannot share with same address.");
 
-		// Create the PasswordData struct and add it to the recipient's shared passwords
-		PasswordData memory newPassword = PasswordData(name, encryptedDataHash);
+		// Create the SharedPasswordData struct and add it to the recipient's shared passwords
+		SharedPasswordData memory newPassword = SharedPasswordData(
+			name,
+			encryptedDataHash,
+			msg.sender,
+			recipient
+		);
 		sharedPasswords[msg.sender][recipient].push(newPassword);
 
 		sentPasswordCount[msg.sender]++;
@@ -77,9 +89,9 @@ contract ShareablePasswordManager is UserPasswordManager {
 		string memory encryptedDataHash
 	) external onlyRegistered {
 		// Find the password and remove it from the recipient's shared passwords
-		PasswordData[] storage recipientPasswords = sharedPasswords[msg.sender][
-			recipient
-		];
+		SharedPasswordData[] storage recipientPasswords = sharedPasswords[
+			msg.sender
+		][recipient];
 		bool anyRemoved;
 		for (uint256 i = 0; i < recipientPasswords.length; i++) {
 			if (
@@ -134,14 +146,14 @@ contract ShareablePasswordManager is UserPasswordManager {
 	// Function to retrieve shared passwords that have been sent to a user
 	function getSharedPasswordsSent(
 		address recipient
-	) external view onlyRegistered returns (PasswordData[] memory) {
+	) external view onlyRegistered returns (SharedPasswordData[] memory) {
 		return sharedPasswords[msg.sender][recipient];
 	}
 
 	// Function to retrieve shared passwords that have been received from a user
 	function getSharedPasswordsReceived(
 		address sender
-	) external view onlyRegistered returns (PasswordData[] memory) {
+	) external view onlyRegistered returns (SharedPasswordData[] memory) {
 		return sharedPasswords[sender][msg.sender];
 	}
 
@@ -150,13 +162,13 @@ contract ShareablePasswordManager is UserPasswordManager {
 		external
 		view
 		onlyRegistered
-		returns (PasswordData[] memory)
+		returns (SharedPasswordData[] memory)
 	{
 		// Determine the total number of passwords sent
 		uint256 totalSentPasswords = sentPasswordCount[msg.sender];
 
 		// Create an array to store the sent passwords
-		PasswordData[] memory allSentPasswords = new PasswordData[](
+		SharedPasswordData[] memory allSentPasswords = new SharedPasswordData[](
 			totalSentPasswords
 		);
 
@@ -165,9 +177,9 @@ contract ShareablePasswordManager is UserPasswordManager {
 
 		for (uint256 i = 0; i < recipientsList.length; i++) {
 			address recipient = recipientsList[i];
-			PasswordData[] memory sentPasswords = sharedPasswords[msg.sender][
-				recipient
-			];
+			SharedPasswordData[] memory sentPasswords = sharedPasswords[
+				msg.sender
+			][recipient];
 
 			for (uint256 j = 0; j < sentPasswords.length; j++) {
 				allSentPasswords[index] = sentPasswords[j];
@@ -183,24 +195,25 @@ contract ShareablePasswordManager is UserPasswordManager {
 		external
 		view
 		onlyRegistered
-		returns (PasswordData[] memory)
+		returns (SharedPasswordData[] memory)
 	{
 		// Determine the total number of passwords received
 		uint256 totalReceivedPasswords = receivedPasswordCount[msg.sender];
 
 		// Create an array to store the received passwords
-		PasswordData[] memory allReceivedPasswords = new PasswordData[](
-			totalReceivedPasswords
-		);
+		SharedPasswordData[]
+			memory allReceivedPasswords = new SharedPasswordData[](
+				totalReceivedPasswords
+			);
 
 		uint256 index = 0;
 		address[] memory sendersList = senders[msg.sender];
 
 		for (uint256 i = 0; i < sendersList.length; i++) {
 			address sender = sendersList[i];
-			PasswordData[] memory receivedPasswords = sharedPasswords[sender][
-				msg.sender
-			];
+			SharedPasswordData[] memory receivedPasswords = sharedPasswords[
+				sender
+			][msg.sender];
 
 			for (uint256 j = 0; j < receivedPasswords.length; j++) {
 				allReceivedPasswords[index] = receivedPasswords[j];

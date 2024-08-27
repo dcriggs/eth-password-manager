@@ -20,16 +20,24 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/",
   },
   {
+    label: "Add Password",
+    href: "/addpassword",
+  },
+  {
     label: "My Passwords",
     href: "/mypasswords",
   },
   {
+    label: "Share Password",
+    href: "/sharepassword",
+  },
+  {
     label: "Shared with Me",
-    href: "/sharedin",
+    href: "/sharedwithme",
   },
   {
     label: "Shared with Others",
-    href: "/sharedout",
+    href: "/sharedwithothers",
   },
   {
     label: "Debug Contracts",
