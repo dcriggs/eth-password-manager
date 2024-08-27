@@ -10,32 +10,32 @@ const MyPasswordsPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchMyPasswords = async () => {
-      if (window.ethereum) {
-        try {
-          const provider = new ethers.BrowserProvider(window.ethereum);
-          const signer = await provider.getSigner();
-          const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract address
-          const contractABI = ShareablePasswordManager.abi;
+  const fetchMyPasswords = async () => {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract address
+        const contractABI = ShareablePasswordManager.abi;
 
-          const contract = new ethers.Contract(contractAddress, contractABI, signer);
-          const passwords = await contract.getPasswords();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        const passwords = await contract.getPasswords();
 
-          const passwordData = passwords.map(([name, encryptedDataHash]: [string, string]) => ({
-            name,
-            encryptedDataHash,
-          }));
+        const passwordData = passwords.map(([name, encryptedDataHash]: [string, string]) => ({
+          name,
+          encryptedDataHash,
+        }));
 
-          setMyPasswords(passwordData);
-        } catch (error) {
-          console.error("Failed to fetch your passwords:", error);
-        }
-      } else {
-        console.error("Please install Metamask!");
+        setMyPasswords(passwordData);
+      } catch (error) {
+        console.error("Failed to fetch your passwords:", error);
       }
-    };
+    } else {
+      console.error("Please install Metamask!");
+    }
+  };
 
+  useEffect(() => {
     fetchMyPasswords();
   }, []);
 
@@ -55,12 +55,10 @@ const MyPasswordsPage = () => {
 
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      // Assuming you have a function `deletePassword` in your contract to delete a password
-      const tx = await contract.deletePassword(id); // Replace with actual parameters later
+      const tx = await contract.deletePassword(id);
       await tx.wait();
 
-      // Refresh the passwords list after deleting
-      setMyPasswords(prev => prev.filter(password => password.encryptedDataHash !== id));
+      fetchMyPasswords();
     } catch (error) {
       console.error("Failed to delete password:", error);
     } finally {
@@ -75,18 +73,14 @@ const MyPasswordsPage = () => {
         {myPasswords.length === 0 ? (
           <p className="text-center">No passwords stored yet.</p>
         ) : (
-          myPasswords.map(password => (
+          myPasswords.map((password, index) => (
             <div key={password.encryptedDataHash} className="bg-base-100 shadow-md rounded-lg p-4 mb-4">
               <h2 className="font-bold">{password.name}</h2>
               <div className="flex justify-between mt-4">
                 <button color="primary" onClick={() => handleViewPassword(password.encryptedDataHash)}>
                   View Details
                 </button>
-                <button
-                  color="error"
-                  onClick={() => handleDeletePassword(password.encryptedDataHash)}
-                  disabled={loading}
-                >
+                <button color="error" onClick={() => handleDeletePassword(index.toString())} disabled={loading}>
                   {loading ? "Deleting..." : "Delete"}
                 </button>
               </div>

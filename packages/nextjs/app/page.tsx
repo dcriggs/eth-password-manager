@@ -14,10 +14,21 @@ interface PasswordData {
   encryptedDataHash: string;
 }
 
+/*
+interface SharedPasswordData {
+  name: string;
+  encryptedDataHash: string;
+  sharedBy: string;
+  sharedWith: string;
+}
+  */
+
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
   const [isUserRegistered, setIsUserRegistered] = useState(false);
   const [passwords, setPasswords] = useState<PasswordData[]>([]);
+  const [sharedWithMe, setSharedWithMe] = useState<PasswordData[]>([]);
+  const [shareWithOthers, setShareWithOthers] = useState<PasswordData[]>([]);
   //const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -111,6 +122,66 @@ const Home: NextPage = () => {
     }
   }
 
+  // Function to fetch passwords from the smart contract
+  async function getAllSharedPasswordsReceived() {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract address
+        const contractABI = ShareablePasswordManager.abi;
+
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        const tx = await contract.getAllSharedPasswordsReceived();
+
+        const passwordData = tx.map(
+          ([name, encryptedDataHash, sharedBy, sharedWith]: [string, string, string, string]) => ({
+            name,
+            encryptedDataHash,
+            sharedBy,
+            sharedWith,
+          }),
+        );
+
+        setSharedWithMe(passwordData);
+      } catch (error) {
+        console.error("Failed to get passwords:", error);
+      }
+    } else {
+      console.log("Please install Metamask!");
+    }
+  }
+
+  // Function to fetch passwords from the smart contract
+  async function getAllSharedPasswordsSent() {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract address
+        const contractABI = ShareablePasswordManager.abi;
+
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        const tx = await contract.getAllSharedPasswordsSent();
+
+        const passwordData = tx.map(
+          ([name, encryptedDataHash, sharedBy, sharedWith]: [string, string, string, string]) => ({
+            name,
+            encryptedDataHash,
+            sharedBy,
+            sharedWith,
+          }),
+        );
+
+        setShareWithOthers(passwordData);
+      } catch (error) {
+        console.error("Failed to get passwords:", error);
+      }
+    } else {
+      console.log("Please install Metamask!");
+    }
+  }
+
   const handleRegister = async () => {
     const publicKey = await getPublicKey();
     if (publicKey) {
@@ -121,6 +192,8 @@ const Home: NextPage = () => {
   useEffect(() => {
     getIsUserRegistered();
     getPasswords();
+    getAllSharedPasswordsReceived();
+    getAllSharedPasswordsSent();
   }, []);
 
   return (
@@ -165,10 +238,10 @@ const Home: NextPage = () => {
               </a>
               {/* Placeholder for shared stats */}
               <a href="/sharedwithme">
-                <p>Passwords shared with you: 0</p>
+                <p>Passwords shared with you: {sharedWithMe.length}</p>
               </a>
               <a href="/sharedwithothers">
-                <p>Passwords you have shared: 0</p>
+                <p>Passwords you have shared: {shareWithOthers.length}</p>
               </a>
             </div>
           </div>

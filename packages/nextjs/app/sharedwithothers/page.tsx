@@ -10,33 +10,33 @@ const SharedWithOthersPage = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchSharedPasswords = async () => {
-      if (window.ethereum) {
-        try {
-          const provider = new ethers.BrowserProvider(window.ethereum);
-          const signer = await provider.getSigner();
-          const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract address
-          const contractABI = ShareablePasswordManager.abi;
+  const fetchSharedPasswords = async () => {
+    if (window.ethereum) {
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract address
+        const contractABI = ShareablePasswordManager.abi;
 
-          const contract = new ethers.Contract(contractAddress, contractABI, signer);
-          const shared = await contract.getAllSharedPasswordsSent();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+        const shared = await contract.getAllSharedPasswordsSent();
 
-          setSharedPasswords(shared);
-        } catch (error) {
-          console.error("Failed to fetch shared passwords:", error);
-        }
+        setSharedPasswords(shared);
+      } catch (error) {
+        console.error("Failed to fetch shared passwords:", error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
     fetchSharedPasswords();
   }, []);
 
   const handleViewPassword = (id: string) => {
-    router.push(`/password/${id}`);
+    router.push(`/sharedwithothers/password/${id}`);
   };
 
-  const handleRevokePassword = async (id: string) => {
+  const handleRevokePassword = async (sharedWith: string, name: string, encryptedDataHash: string) => {
     if (!window.ethereum) return;
 
     setLoading(true);
@@ -49,11 +49,10 @@ const SharedWithOthersPage = () => {
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
       // Assuming you have a function `revokeSharedPassword` in your contract to revoke a password
-      const tx = await contract.revokeSharedPassword(id); // Replace with actual parameters later
+      const tx = await contract.revokeSharedPassword(sharedWith, name, encryptedDataHash); // Replace with actual parameters later
       await tx.wait();
 
-      // Refresh the shared passwords list after revoking
-      setSharedPasswords(prev => prev.filter(password => password.id !== id));
+      fetchSharedPasswords();
     } catch (error) {
       console.error("Failed to revoke password:", error);
     } finally {
@@ -78,7 +77,7 @@ const SharedWithOthersPage = () => {
                 </button>
                 <button
                   color="error"
-                  onClick={() => handleRevokePassword(password.encryptedDataHash)}
+                  onClick={() => handleRevokePassword(password.sharedWith, password.name, password.encryptedDataHash)}
                   disabled={loading}
                 >
                   {loading ? "Revoking..." : "Revoke"}

@@ -32,7 +32,7 @@ const SharedWithMePage = () => {
   }, []);
 
   const handleViewPassword = (id: string) => {
-    router.push(`/password/${id}`);
+    router.push(`/sharedwithme/password/${id}`);
   };
 
   return (
