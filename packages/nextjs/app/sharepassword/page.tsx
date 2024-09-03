@@ -60,6 +60,13 @@ const SharePasswordPage = () => {
 
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
+        // Make sure the recipient is registered
+        const recipientIsRegistered = await contract.isUserRegistered(recipientAddress);
+        if (!recipientIsRegistered) {
+          window.alert("Recipient is not registered.");
+          return;
+        }
+
         // Get the recipient's public key from the smart contract
         const recipientPublicKey = await contract.getUserPublicKey(recipientAddress);
 
