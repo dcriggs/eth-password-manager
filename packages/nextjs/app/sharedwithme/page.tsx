@@ -46,7 +46,11 @@ const SharedWithMePage = () => {
             <div key={password.encryptedDataHash} className="bg-base-100 shadow-md rounded-lg p-4 mb-4">
               <h2 className="font-bold">{password.name}</h2>
               <p>Shared by: {password.sharedBy}</p>
-              <button color="primary" onClick={() => handleViewPassword(password.encryptedDataHash)}>
+              <button
+                color="primary"
+                className="btn btn-success"
+                onClick={() => handleViewPassword(password.encryptedDataHash)}
+              >
                 View Details
               </button>
             </div>

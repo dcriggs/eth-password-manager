@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import ShareablePasswordManager from "../../../hardhat/artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
+import { pinJSONToIPFS } from "../../components/custom/pinataService";
+import * as sigUtil from "@metamask/eth-sig-util";
 import { ethers } from "ethers";
 
 const SharePasswordPage = () => {
@@ -13,24 +15,39 @@ const SharePasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  function encryptPassword(publicKey: string, password: string | null) {
+    const encryptedData = sigUtil.encrypt({
+      publicKey: publicKey,
+      data: password,
+      version: "x25519-xsalsa20-poly1305",
+    });
+    return encryptedData;
+  }
+
+  const uploadDataToIPFS = async (encryptedData: string) => {
+    try {
+      // Use await to wait for the promise to resolve and get the IPFS hash
+      const hash = await pinJSONToIPFS(encryptedData);
+
+      // Now you can use the IPFS hash returned by the function
+      console.log("Uploaded to IPFS with hash:", hash);
+
+      return hash;
+    } catch (error) {
+      // If an error occurs, it will be caught here
+      console.error("Failed to upload to IPFS:", error);
+    }
+  };
+
   const handleSharePassword = async (event: React.FormEvent) => {
     event.preventDefault();
 
     // Create the JSON object for encryption
-    const encryptedData = JSON.stringify({
-      username,
-      password,
-      website,
+    const encodedData = JSON.stringify({
+      username: username,
+      password: password,
+      website: website,
     });
-
-    // Simulate encryption and Pinata upload process
-    // You should replace this part with your actual encryption logic and Pinata API call
-    const encryptedDataHash = await mockEncryptAndUploadToPinata(encryptedData);
-
-    if (!encryptedDataHash) {
-      setMessage("Failed to encrypt and upload password data.");
-      return;
-    }
 
     // Proceed to interact with the smart contract to share the password
     if (window.ethereum) {
@@ -43,8 +60,17 @@ const SharePasswordPage = () => {
 
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
+        // Get the recipient's public key from the smart contract
+        const recipientPublicKey = await contract.getUserPublicKey(recipientAddress);
+
+        // Encrypt the encodedData using the public key
+        const encryptedData = encryptPassword(recipientPublicKey, encodedData);
+
+        // Upload the encrypted data to IPFS with Pinata; get the hash in return
+        const returnedHash = await uploadDataToIPFS(JSON.stringify(encryptedData));
+
         // Interact with the smart contract to share the password
-        const tx = await contract.sharePassword(recipientAddress, name, encryptedDataHash);
+        const tx = await contract.sharePassword(recipientAddress, name, returnedHash);
         await tx.wait();
 
         setMessage("Password shared successfully!");
@@ -65,25 +91,14 @@ const SharePasswordPage = () => {
     }
   };
 
-  // Mock function for encryption and upload to Pinata (replace with real implementation)
-  const mockEncryptAndUploadToPinata = async (data: string) => {
-    // Simulate encryption and getting a hash from Pinata
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const simulatedHash = "0x" + ethers.keccak256(ethers.toUtf8Bytes(data)).substring(2);
-        resolve(simulatedHash);
-      }, 1000);
-    });
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">Share Password</h1>
       <div className="max-w-lg mx-auto bg-base-100 shadow-md rounded-lg p-6">
         <form onSubmit={handleSharePassword}>
           <div className="mb-4">
-            <h2 className="text-xl font-semibold mb-2">Unencrypted Information</h2>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="recipientAddress">
+            <h2 className="text-xl font-semibold mb-2 text-center">Unencrypted Information</h2>
+            <label className="block text-sm font-bold mb-2" htmlFor="recipientAddress">
               Recipient Address
             </label>
             <input
@@ -91,14 +106,14 @@ const SharePasswordPage = () => {
               id="recipientAddress"
               value={recipientAddress}
               onChange={e => setRecipientAddress(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter recipient's Ethereum address"
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+            <label className="block text-sm font-bold mb-2" htmlFor="name">
               Name
             </label>
             <input
@@ -106,7 +121,7 @@ const SharePasswordPage = () => {
               id="name"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter a name for the password"
               required
             />
@@ -115,8 +130,8 @@ const SharePasswordPage = () => {
           <hr className="my-4" />
 
           <div className="mb-4">
-            <h2 className="text-xl font-semibold mb-2">Encrypted Information</h2>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+            <h2 className="text-xl font-semibold mb-2 text-center">Encrypted Information</h2>
+            <label className="block text-sm font-bold mb-2" htmlFor="username">
               Username
             </label>
             <input
@@ -124,14 +139,14 @@ const SharePasswordPage = () => {
               id="username"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter username"
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+            <label className="block text-sm font-bold mb-2" htmlFor="password">
               Password
             </label>
             <input
@@ -139,14 +154,14 @@ const SharePasswordPage = () => {
               id="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter password"
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="website">
+            <label className="block text-sm font-bold mb-2" htmlFor="website">
               Website
             </label>
             <input
@@ -154,18 +169,14 @@ const SharePasswordPage = () => {
               id="website"
               value={website}
               onChange={e => setWebsite(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter website URL"
               required
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              disabled={loading}
-            >
+          <div className="flex items-center justify-center">
+            <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? "Sharing..." : "Share Password"}
             </button>
           </div>

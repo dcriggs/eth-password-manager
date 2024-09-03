@@ -77,10 +77,19 @@ const MyPasswordsPage = () => {
             <div key={password.encryptedDataHash} className="bg-base-100 shadow-md rounded-lg p-4 mb-4">
               <h2 className="font-bold">{password.name}</h2>
               <div className="flex justify-between mt-4">
-                <button color="primary" onClick={() => handleViewPassword(password.encryptedDataHash)}>
+                <button
+                  color="primary"
+                  className="btn btn-success"
+                  onClick={() => handleViewPassword(password.encryptedDataHash)}
+                >
                   View Details
                 </button>
-                <button color="error" onClick={() => handleDeletePassword(index.toString())} disabled={loading}>
+                <button
+                  color="error"
+                  className="btn btn-error"
+                  onClick={() => handleDeletePassword(index.toString())}
+                  disabled={loading}
+                >
                   {loading ? "Deleting..." : "Delete"}
                 </button>
               </div>

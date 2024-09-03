@@ -72,11 +72,16 @@ const SharedWithOthersPage = () => {
               <h2 className="font-bold">{password.name}</h2>
               <p>Shared with: {password.sharedWith}</p>
               <div className="flex justify-between mt-4">
-                <button color="primary" onClick={() => handleViewPassword(password.encryptedDataHash)}>
+                <button
+                  color="primary"
+                  className="btn btn-success"
+                  onClick={() => handleViewPassword(password.encryptedDataHash)}
+                >
                   View Details
                 </button>
                 <button
                   color="error"
+                  className="btn btn-error"
                   onClick={() => handleRevokePassword(password.sharedWith, password.name, password.encryptedDataHash)}
                   disabled={loading}
                 >
