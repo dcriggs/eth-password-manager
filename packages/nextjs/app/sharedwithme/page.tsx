@@ -31,8 +31,8 @@ const SharedWithMePage = () => {
     fetchReceivedPasswords();
   }, []);
 
-  const handleViewPassword = (id: string) => {
-    router.push(`/sharedwithme/password/${id}`);
+  const handleViewPassword = (id: string, index: number) => {
+    router.push(`/sharedwithme/password/${id}/${index}`);
   };
 
   return (
@@ -42,14 +42,14 @@ const SharedWithMePage = () => {
         {receivedPasswords.length === 0 ? (
           <p className="text-center">No passwords shared with you yet.</p>
         ) : (
-          receivedPasswords.map(password => (
+          receivedPasswords.map((password, index) => (
             <div key={password.encryptedDataHash} className="bg-base-100 shadow-md rounded-lg p-4 mb-4">
               <h2 className="font-bold">{password.name}</h2>
               <p>Shared by: {password.sharedBy}</p>
               <button
                 color="primary"
                 className="btn btn-success"
-                onClick={() => handleViewPassword(password.encryptedDataHash)}
+                onClick={() => handleViewPassword(password.encryptedDataHash, index)}
               >
                 View Details
               </button>

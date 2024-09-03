@@ -39,8 +39,8 @@ const MyPasswordsPage = () => {
     fetchMyPasswords();
   }, []);
 
-  const handleViewPassword = (id: string) => {
-    router.push(`/mypasswords/password/${id}`);
+  const handleViewPassword = (id: string, index: number) => {
+    router.push(`/mypasswords/password/${id}/${index}`);
   };
 
   const handleDeletePassword = async (id: string) => {
@@ -80,7 +80,7 @@ const MyPasswordsPage = () => {
                 <button
                   color="primary"
                   className="btn btn-success"
-                  onClick={() => handleViewPassword(password.encryptedDataHash)}
+                  onClick={() => handleViewPassword(password.encryptedDataHash, index)}
                 >
                   View Details
                 </button>
