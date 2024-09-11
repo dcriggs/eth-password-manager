@@ -14,7 +14,16 @@ const AddPasswordPage = () => {
   const [website, setWebsite] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [hash, setHash] = useState("");
   const { address: connectedAddress } = useAccount();
+
+  // Function to trigger the modal
+  const showModal = () => {
+    const checkbox = document.getElementById("my_modal_7") as HTMLInputElement;
+    if (checkbox) {
+      checkbox.checked = true;
+    }
+  };
 
   function encryptPassword(publicKey: string, password: string | null) {
     const encryptedData = sigUtil.encrypt({
@@ -27,15 +36,9 @@ const AddPasswordPage = () => {
 
   const uploadDataToIPFS = async (encryptedData: string) => {
     try {
-      // Use await to wait for the promise to resolve and get the IPFS hash
       const hash = await pinJSONToIPFS(encryptedData);
-
-      // Now you can use the IPFS hash returned by the function
-      console.log("Uploaded to IPFS with hash:", hash);
-
       return hash;
     } catch (error) {
-      // If an error occurs, it will be caught here
       console.error("Failed to upload to IPFS:", error);
     }
   };
@@ -43,43 +46,38 @@ const AddPasswordPage = () => {
   const handleAddPassword = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Create the JSON object for encryption
     const encodedData = JSON.stringify({
       username: username,
       password: password,
       website: website,
     });
 
-    // Proceed to interact with the smart contract to store the password
     if (window.ethereum) {
       try {
         setLoading(true);
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
-        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with your contract address
+        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
         const contractABI = ShareablePasswordManager.abi;
 
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        // Get the user's public key from the smart contract
         const userPublicKey = await contract.getUserPublicKey(connectedAddress);
-
-        // Encrypt the encodedData using the public key
         const encryptedData = encryptPassword(userPublicKey, encodedData);
-
-        // Upload the encrypted data to IPFS with Pinata; get the hash in return
         const returnedHash = await uploadDataToIPFS(JSON.stringify(encryptedData));
+        setHash(returnedHash ? returnedHash : "");
 
-        // Interact with the smart contract to store the password
         const tx = await contract.storePassword(name, returnedHash);
         await tx.wait();
 
         setMessage("Password added successfully!");
-        // Reset form fields after submission
         setName("");
         setUsername("");
         setPassword("");
         setWebsite("");
+
+        // Show the modal when the password is successfully added
+        showModal();
       } catch (error) {
         console.error("Failed to store password:", error);
         setMessage("Failed to store password.");
@@ -167,6 +165,19 @@ const AddPasswordPage = () => {
           </div>
         </form>
         {message && <p className="mt-4 text-center">{message}</p>}
+      </div>
+
+      {/* Hidden modal section */}
+      <input type="checkbox" id="my_modal_7" className="modal-toggle" />
+      <div className="modal" role="dialog">
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Success!</h3>
+          <p className="py-4">Password was added successfully! Click anywhere to continue.</p>
+          <p className="py-4">Hash: {hash}</p>
+        </div>
+        <label className="modal-backdrop" htmlFor="my_modal_7">
+          Close
+        </label>
       </div>
     </div>
   );

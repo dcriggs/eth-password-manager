@@ -201,8 +201,8 @@ const Home: NextPage = () => {
       {/* Welcome Section */}
       <div className="px-5">
         <h1 className="text-center">
-          <span className="block text-2xl mb-2">Welcome to Dawson&apos;s</span>
-          <span className="block text-4xl font-bold">ETH Password Manager</span>
+          <span className="block text-4xl font-bold mb-4">Welcome to EthPass</span>
+          <span className="block text-2xl mb-2">Blockchain Password Manager</span>
         </h1>
         <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
           <p className="my-2 font-medium">Connected Address:</p>
@@ -225,7 +225,7 @@ const Home: NextPage = () => {
             {/* Feature Navigation */}
             <div className="flex flex-col items-center space-y-4 mt-6">
               <button className="btn btn-secondary" onClick={() => router.push("/addpassword")}>
-                Add Password
+                New Password
               </button>
               <button className="btn btn-secondary" onClick={() => router.push("/sharepassword")}>
                 Share Password

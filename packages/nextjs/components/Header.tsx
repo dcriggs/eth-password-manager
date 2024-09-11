@@ -29,19 +29,19 @@ export const menuLinks: HeaderMenuLink[] = [
     icon: <HomeIcon className="h-4 w-4" />,
   },
   {
-    label: "Add Password",
+    label: "New Password",
     href: "/addpassword",
     icon: <DocumentPlusIcon className="h-4 w-4" />,
-  },
-  {
-    label: "My Passwords",
-    href: "/mypasswords",
-    icon: <DocumentDuplicateIcon className="h-4 w-4" />,
   },
   {
     label: "Share Password",
     href: "/sharepassword",
     icon: <EnvelopeIcon className="h-4 w-4" />,
+  },
+  {
+    label: "My Logins",
+    href: "/mypasswords",
+    icon: <DocumentDuplicateIcon className="h-4 w-4" />,
   },
   {
     label: "Shared with Me",
@@ -122,8 +122,8 @@ export const Header = () => {
             <Image alt="SE2 logo" className="cursor-pointer" fill src="/logo.svg" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">EthPassMan</span>
-            <span className="text-xs">Ethereum password manager</span>
+            <span className="font-bold leading-tight">EthPass</span>
+            <span className="text-xs">Blockchain Password Manager</span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">

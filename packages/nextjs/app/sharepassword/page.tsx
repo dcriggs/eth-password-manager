@@ -14,6 +14,15 @@ const SharePasswordPage = () => {
   const [website, setWebsite] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [hash, setHash] = useState(""); // State for IPFS hash
+
+  // Function to trigger the modal
+  const showModal = () => {
+    const checkbox = document.getElementById("share_password_modal") as HTMLInputElement;
+    if (checkbox) {
+      checkbox.checked = true;
+    }
+  };
 
   function encryptPassword(publicKey: string, password: string | null) {
     const encryptedData = sigUtil.encrypt({
@@ -26,15 +35,9 @@ const SharePasswordPage = () => {
 
   const uploadDataToIPFS = async (encryptedData: string) => {
     try {
-      // Use await to wait for the promise to resolve and get the IPFS hash
       const hash = await pinJSONToIPFS(encryptedData);
-
-      // Now you can use the IPFS hash returned by the function
-      console.log("Uploaded to IPFS with hash:", hash);
-
       return hash;
     } catch (error) {
-      // If an error occurs, it will be caught here
       console.error("Failed to upload to IPFS:", error);
     }
   };
@@ -42,14 +45,12 @@ const SharePasswordPage = () => {
   const handleSharePassword = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Create the JSON object for encryption
     const encodedData = JSON.stringify({
       username: username,
       password: password,
       website: website,
     });
 
-    // Proceed to interact with the smart contract to share the password
     if (window.ethereum) {
       try {
         setLoading(true);
@@ -60,28 +61,25 @@ const SharePasswordPage = () => {
 
         const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        // Make sure the recipient is registered
         const recipientIsRegistered = await contract.isUserRegistered(recipientAddress);
         if (!recipientIsRegistered) {
           window.alert("Recipient is not registered.");
           return;
         }
 
-        // Get the recipient's public key from the smart contract
         const recipientPublicKey = await contract.getUserPublicKey(recipientAddress);
-
-        // Encrypt the encodedData using the public key
         const encryptedData = encryptPassword(recipientPublicKey, encodedData);
-
-        // Upload the encrypted data to IPFS with Pinata; get the hash in return
         const returnedHash = await uploadDataToIPFS(JSON.stringify(encryptedData));
+        setHash(returnedHash ? returnedHash : "");
 
-        // Interact with the smart contract to share the password
         const tx = await contract.sharePassword(recipientAddress, name, returnedHash);
         await tx.wait();
 
         setMessage("Password shared successfully!");
-        // Reset form fields after submission
+
+        // Show the modal when the password is successfully shared
+        showModal();
+
         setRecipientAddress("");
         setName("");
         setUsername("");
@@ -189,6 +187,19 @@ const SharePasswordPage = () => {
           </div>
         </form>
         {message && <p className="mt-4 text-center">{message}</p>}
+      </div>
+
+      {/* Hidden modal section */}
+      <input type="checkbox" id="share_password_modal" className="modal-toggle" />
+      <div className="modal" role="dialog">
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">Success!</h3>
+          <p className="py-4">Password was shared successfully! Click anywhere to continue.</p>
+          <p className="py-4">Hash: {hash}</p>
+        </div>
+        <label className="modal-backdrop" htmlFor="share_password_modal">
+          Close
+        </label>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 
 const MyPasswordsPage = () => {
   const [myPasswords, setMyPasswords] = useState<any[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -66,35 +67,54 @@ const MyPasswordsPage = () => {
     }
   };
 
+  // Filter passwords based on search text
+  const filteredPasswords = myPasswords.filter(password =>
+    password.name.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center mb-8">My Passwords</h1>
+
+      {/* Search bar for filtering */}
+      <div className="max-w-2xl mx-auto mb-4">
+        <input
+          type="text"
+          placeholder="Search passwords..."
+          className="input input-bordered w-full"
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)} // Update search text on change
+        />
+      </div>
+
       <div className="max-w-2xl mx-auto">
-        {myPasswords.length === 0 ? (
-          <p className="text-center">No passwords stored yet.</p>
+        {filteredPasswords.length === 0 ? (
+          <p className="text-center">No passwords found.</p>
         ) : (
-          myPasswords.map((password, index) => (
-            <div key={password.encryptedDataHash} className="bg-base-100 shadow-md rounded-lg p-4 mb-4">
-              <h2 className="font-bold">{password.name}</h2>
-              <div className="flex justify-between mt-4">
-                <button
-                  color="primary"
-                  className="btn btn-success"
-                  onClick={() => handleViewPassword(password.encryptedDataHash, index)}
-                >
-                  View Details
-                </button>
-                <button
-                  color="error"
-                  className="btn btn-error"
-                  onClick={() => handleDeletePassword(index.toString())}
-                  disabled={loading}
-                >
-                  {loading ? "Deleting..." : "Delete"}
-                </button>
+          <div className="overflow-y-auto h-[420px]">
+            {" "}
+            {/* Scrollable container */}
+            {filteredPasswords.map((password, index) => (
+              <div key={password.encryptedDataHash} className="bg-base-100 shadow-md rounded-lg p-4 mb-4">
+                <h2 className="font-bold">{password.name}</h2>
+                <div className="flex justify-between mt-4">
+                  <button
+                    className="btn btn-success"
+                    onClick={() => handleViewPassword(password.encryptedDataHash, index)}
+                  >
+                    View Details
+                  </button>
+                  <button
+                    className="btn btn-error"
+                    onClick={() => handleDeletePassword(index.toString())}
+                    disabled={loading}
+                  >
+                    {loading ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
