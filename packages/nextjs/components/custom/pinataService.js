@@ -1,5 +1,9 @@
 const axios = require("axios");
-const JWT = process.env.NEXT_PUBLIC_PINATA_API_KEY; // Ensure this is set correctly
+//const JWT = process.env.NEXT_PUBLIC_PINATA_API_KEY;
+const JWT =
+  process.env.NEXT_PUBLIC_PINATA_JWT_PART_1 +
+  process.env.NEXT_PUBLIC_PINATA_JWT_PART_2 +
+  process.env.NEXT_PUBLIC_PINATA_JWT_PART_3; // Ensure this is set correctly
 
 /**
  * Uploads a string to IPFS via Pinata.
