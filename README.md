@@ -1,25 +1,32 @@
-# 🏗 Scaffold-ETH 2
+# 🔐 EthPass: A Blockchain-Based Password Manager
+
+**EthPass** is a full-stack decentralized password manager application that leverages Solidity smart contracts on Ethereum and a Next.js front-end. Built as my capstone project, **EthPass** tackles the challenge of securely storing sensitive login credentials on a publicly visible blockchain using **public key cryptography**.
+
+This project builds upon **Scaffold-ETH 2**, an open-source toolkit designed to streamline the development of decentralized applications (dapps) on Ethereum.
 
 <h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
+  <a href="https://docs.scaffoldeth.io">Scaffold-ETH Documentation</a> |
+  <a href="https://scaffoldeth.io">Scaffold-ETH Website</a>
 </h4>
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+⚙️ **EthPass** uses **Scaffold-ETH 2** as its foundation, which provides powerful tools such as Next.js, RainbowKit, Hardhat, Wagmi, Viem, and Typescript to simplify the development process.
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+- **Encryption with Public Key Cryptography**: Credentials are encrypted using your public key, with only the private key being able to decrypt the data.
+- **Decentralized Storage**: User credentials are stored securely on IPFS (InterPlanetary File System), and IPFS hashes are managed via Ethereum smart contracts.
+- **Wallet Integration**: Your crypto wallet handles key management, making the process seamless when you register or log in.
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+🛠 **Key Scaffold-ETH 2 Features**:
+- ✅ **Contract Hot Reload**: Frontend adapts automatically to smart contract changes.
+- 🪝 **Custom hooks**: Simplify interactions with smart contracts.
+- 🧱 **Web3 components**: Build frontend interfaces quickly.
+- 🔥 **Burner Wallet & Local Faucet**: Test your application with ease.
+- 🔐 **Wallet Provider Integration**: Seamless connection with Ethereum wallets.
 
 ![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
 
 ## Requirements
 
-Before you begin, you need to install the following tools:
+Before running **EthPass**, ensure you have the following installed:
 
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
@@ -27,55 +34,42 @@ Before you begin, you need to install the following tools:
 
 ## Quickstart
 
-To get started with Scaffold-ETH 2, follow the steps below:
+To get started with **EthPass**, follow these steps:
 
-1. Clone this repo & install dependencies
+1. Clone the repo & install dependencies:
 
 ```
-git clone https://github.com/scaffold-eth/scaffold-eth-2.git
-cd scaffold-eth-2
+git clone https://github.com/dcriggs/eth-password-manager.git
+cd ethpass
 yarn install
 ```
 
-2. Run a local network in the first terminal:
+2. Run a local Ethereum network in the first terminal:
 
 ```
 yarn chain
 ```
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
+3. On a second terminal, deploy the smart contracts:
 
 ```
 yarn deploy
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
+4. On a third terminal, start the Next.js app:
 
 ```
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+Visit your app at: `http://localhost:3000`. Interact with the smart contracts using the `Debug Contracts` page.
 
-**What's next**:
-
-- Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
-- Edit your smart contract test in: `packages/hardhat/test`. To run test use `yarn hardhat:test`
+**Next Steps**:
+- Customize your contract `YourContract.sol` in `packages/hardhat/contracts`
+- Modify the homepage at `packages/nextjs/app/page.tsx`
+- Adjust deployment scripts in `packages/hardhat/deploy`
+- Write tests in `packages/hardhat/test`. Run them using `yarn hardhat:test`
 
 ## Documentation
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+For more info on Scaffold-ETH 2, check out the [docs](https://docs.scaffoldeth.io) and [website](https://scaffoldeth.io).
