@@ -29,7 +29,7 @@ const MyPasswordsPage = () => {
 
         setMyPasswords(passwordData);
       } catch (error) {
-        console.error("Failed to fetch your passwords:", error);
+        console.error("Failed to fetch your logins:", error);
       }
     } else {
       console.error("Please install Metamask!");
@@ -61,7 +61,7 @@ const MyPasswordsPage = () => {
 
       fetchMyPasswords();
     } catch (error) {
-      console.error("Failed to delete password:", error);
+      console.error("Failed to delete login:", error);
     } finally {
       setLoading(false);
     }
@@ -74,13 +74,13 @@ const MyPasswordsPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">My Passwords</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">My Logins</h1>
 
       {/* Search bar for filtering */}
       <div className="max-w-2xl mx-auto mb-4">
         <input
           type="text"
-          placeholder="Search passwords..."
+          placeholder="Search logins..."
           className="input input-bordered w-full"
           value={searchText}
           onChange={e => setSearchText(e.target.value)} // Update search text on change
@@ -89,7 +89,7 @@ const MyPasswordsPage = () => {
 
       <div className="max-w-2xl mx-auto">
         {filteredPasswords.length === 0 ? (
-          <p className="text-center">No passwords found.</p>
+          <p className="text-center">No logins found.</p>
         ) : (
           <div className="overflow-y-auto h-[420px]">
             {" "}

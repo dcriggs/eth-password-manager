@@ -43,7 +43,7 @@ const PasswordDetailPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Password Details</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Login Details</h1>
       <h4 className="text-center mb-8">Only the recipient can decrypt this data.</h4>
       <div className="max-w-md mx-auto bg-base-100 shadow-lg rounded-lg p-6">
         <div className="mb-4">

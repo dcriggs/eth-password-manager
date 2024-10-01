@@ -212,7 +212,7 @@ const Home: NextPage = () => {
       {/* Registration Section */}
       {!isUserRegistered ? (
         <div className="mt-8 text-center">
-          <p className="text-lg mb-4">Register to use the Password Manager (0.01 ETH registration fee)</p>
+          <p className="text-lg mb-4">Register to use EthPass (0.01 ETH registration fee)</p>
           <button className="btn btn-primary" onClick={handleRegister}>
             Register
           </button>
@@ -225,23 +225,23 @@ const Home: NextPage = () => {
             {/* Feature Navigation */}
             <div className="flex flex-col items-center space-y-4 mt-6">
               <button className="btn btn-secondary" onClick={() => router.push("/addpassword")}>
-                New Password
+                New Login
               </button>
               <button className="btn btn-secondary" onClick={() => router.push("/sharepassword")}>
-                Share Password
+                Share Login
               </button>
             </div>
             {/* Displaying Stats */}
             <div className="mt-8">
               <a href="/mypasswords">
-                <p>You have {passwords.length} passwords stored.</p>
+                <p>You have {passwords.length} logins stored.</p>
               </a>
               {/* Placeholder for shared stats */}
               <a href="/sharedwithme">
-                <p>Passwords shared with you: {sharedWithMe.length}</p>
+                <p>Logins shared with you: {sharedWithMe.length}</p>
               </a>
               <a href="/sharedwithothers">
-                <p>Passwords you have shared: {shareWithOthers.length}</p>
+                <p>Logins you have shared: {shareWithOthers.length}</p>
               </a>
             </div>
           </div>

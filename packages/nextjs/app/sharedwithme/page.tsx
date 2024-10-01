@@ -51,13 +51,13 @@ const SharedWithMePage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Passwords Shared With Me</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Logins Shared With Me</h1>
 
       {/* Search bar for filtering */}
       <div className="max-w-2xl mx-auto mb-4">
         <input
           type="text"
-          placeholder="Search passwords..."
+          placeholder="Search logins..."
           className="input input-bordered w-full"
           value={searchText}
           onChange={e => setSearchText(e.target.value)} // Update search text on change
@@ -66,7 +66,7 @@ const SharedWithMePage = () => {
 
       <div className="max-w-2xl mx-auto">
         {filteredPasswords.length === 0 ? (
-          <p className="text-center">No passwords found.</p>
+          <p className="text-center">No logins found.</p>
         ) : (
           <div className="overflow-y-auto h-[420px]">
             {" "}

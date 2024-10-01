@@ -33,7 +33,7 @@ const SharedWithOthersPage = () => {
 
         setSharedPasswords(sharedPasswordData);
       } catch (error) {
-        console.error("Failed to fetch shared passwords:", error);
+        console.error("Failed to fetch shared logins:", error);
       }
     }
   };
@@ -63,7 +63,7 @@ const SharedWithOthersPage = () => {
 
       fetchSharedPasswords();
     } catch (error) {
-      console.error("Failed to revoke password:", error);
+      console.error("Failed to revoke login:", error);
     } finally {
       setLoading(false);
     }
@@ -76,13 +76,13 @@ const SharedWithOthersPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Passwords Shared With Others</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Logins Shared With Others</h1>
 
       {/* Search bar for filtering */}
       <div className="max-w-2xl mx-auto mb-4">
         <input
           type="text"
-          placeholder="Search passwords..."
+          placeholder="Search logins..."
           className="input input-bordered w-full"
           value={searchText}
           onChange={e => setSearchText(e.target.value)} // Update search text on change
@@ -91,7 +91,7 @@ const SharedWithOthersPage = () => {
 
       <div className="max-w-2xl mx-auto">
         {filteredPasswords.length === 0 ? (
-          <p className="text-center">No passwords shared with others yet.</p>
+          <p className="text-center">No logins shared with others yet.</p>
         ) : (
           <div className="overflow-y-auto h-[420px]">
             {" "}

@@ -29,12 +29,12 @@ export const menuLinks: HeaderMenuLink[] = [
     icon: <HomeIcon className="h-4 w-4" />,
   },
   {
-    label: "New Password",
+    label: "New Login",
     href: "/addpassword",
     icon: <DocumentPlusIcon className="h-4 w-4" />,
   },
   {
-    label: "Share Password",
+    label: "Share Login",
     href: "/sharepassword",
     icon: <EnvelopeIcon className="h-4 w-4" />,
   },

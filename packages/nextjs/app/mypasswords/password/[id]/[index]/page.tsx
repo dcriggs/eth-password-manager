@@ -174,7 +174,7 @@ const PasswordDetailPage = () => {
         setPassword("");
         setWebsite("");
       } catch (error) {
-        console.error("Failed to store or update password:", error);
+        console.error("Failed to store or update login:", error);
         //setMessage("Failed to store or update password.");
       } finally {
         //setLoading(false);
@@ -204,7 +204,7 @@ const PasswordDetailPage = () => {
 
         setName(passwordData[Number(index)].name);
       } catch (error) {
-        console.error("Failed to fetch your passwords:", error);
+        console.error("Failed to fetch your logins:", error);
       }
     } else {
       console.error("Please install Metamask!");
@@ -218,8 +218,8 @@ const PasswordDetailPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Password Details</h1>
-      <h4 className="text-center mb-8">Only you can decrypt your own saved passwords.</h4>
+      <h1 className="text-3xl font-bold text-center mb-8">Login Details</h1>
+      <h4 className="text-center mb-8">Only you can decrypt your own saved logins.</h4>
       <div className="max-w-md mx-auto bg-base-100 shadow-lg rounded-lg p-6">
         <form onSubmit={event => handlePasswordAction(event, isEditing, Number(index))}>
           <div className="mb-4">
@@ -245,7 +245,7 @@ const PasswordDetailPage = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block font-medium mb-2">Website</label>
+            <label className="block font-medium mb-2">Website URL</label>
             <input
               value={website}
               onChange={e => setWebsite(e.target.value)}

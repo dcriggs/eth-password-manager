@@ -98,7 +98,7 @@ const SharePasswordPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Share Password</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Share Login</h1>
       <div className="max-w-lg mx-auto bg-base-100 shadow-md rounded-lg p-6">
         <form onSubmit={handleSharePassword}>
           <div className="mb-4">
@@ -127,7 +127,7 @@ const SharePasswordPage = () => {
               value={name}
               onChange={e => setName(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Enter a name for the password"
+              placeholder="Enter a name for the login"
               required
             />
           </div>
@@ -167,7 +167,7 @@ const SharePasswordPage = () => {
 
           <div className="mb-4">
             <label className="block text-sm font-bold mb-2" htmlFor="website">
-              Website
+              Website URL
             </label>
             <input
               type="text"
@@ -182,7 +182,7 @@ const SharePasswordPage = () => {
 
           <div className="flex items-center justify-center">
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? "Sharing..." : "Share Password"}
+              {loading ? "Sharing..." : "Share Login"}
             </button>
           </div>
         </form>
@@ -194,8 +194,13 @@ const SharePasswordPage = () => {
       <div className="modal" role="dialog">
         <div className="modal-box">
           <h3 className="text-lg font-bold">Success!</h3>
-          <p className="py-4">Password was shared successfully! Click anywhere to continue.</p>
-          <p className="py-4">Hash: {hash}</p>
+          <p className="py-4">Login was shared successfully! Click anywhere to continue.</p>
+          <p className="py-4 text-sm italic">Hash: {hash}</p>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <a href="/sharedwithothers">
+              <button className="btn btn-success">View Shared Logins</button>
+            </a>
+          </div>
         </div>
         <label className="modal-backdrop" htmlFor="share_password_modal">
           Close

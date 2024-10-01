@@ -70,17 +70,17 @@ const AddPasswordPage = () => {
         const tx = await contract.storePassword(name, returnedHash);
         await tx.wait();
 
-        setMessage("Password added successfully!");
+        setMessage("Login added successfully!");
         setName("");
         setUsername("");
         setPassword("");
         setWebsite("");
 
-        // Show the modal when the password is successfully added
+        // Show the modal when the login is successfully added
         showModal();
       } catch (error) {
-        console.error("Failed to store password:", error);
-        setMessage("Failed to store password.");
+        console.error("Failed to store login:", error);
+        setMessage("Failed to store login.");
       } finally {
         setLoading(false);
       }
@@ -91,7 +91,7 @@ const AddPasswordPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Add New Password</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Add New Login</h1>
       <div className="max-w-lg mx-auto bg-base-100 shadow-md rounded-lg p-6">
         <form onSubmit={handleAddPassword}>
           <div className="mb-4">
@@ -105,7 +105,7 @@ const AddPasswordPage = () => {
               value={name}
               onChange={e => setName(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Enter a name for the password"
+              placeholder="Enter a name for the login"
               required
             />
           </div>
@@ -145,7 +145,7 @@ const AddPasswordPage = () => {
 
           <div className="mb-4">
             <label className="block text-sm font-bold mb-2" htmlFor="website">
-              Website
+              Website URL
             </label>
             <input
               type="text"
@@ -160,7 +160,7 @@ const AddPasswordPage = () => {
 
           <div className="flex items-center justify-center">
             <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? "Adding..." : "Add Password"}
+              {loading ? "Adding..." : "Add Login"}
             </button>
           </div>
         </form>
@@ -172,8 +172,13 @@ const AddPasswordPage = () => {
       <div className="modal" role="dialog">
         <div className="modal-box">
           <h3 className="text-lg font-bold">Success!</h3>
-          <p className="py-4">Password was added successfully! Click anywhere to continue.</p>
-          <p className="py-4">Hash: {hash}</p>
+          <p className="py-4">Login was added successfully! Click anywhere to continue.</p>
+          <p className="py-4 text-sm italic">Hash: {hash}</p>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <a href="/mypasswords">
+              <button className="btn btn-success">View My Logins</button>
+            </a>
+          </div>
         </div>
         <label className="modal-backdrop" htmlFor="my_modal_7">
           Close

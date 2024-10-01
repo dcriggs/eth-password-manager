@@ -30,7 +30,7 @@ const PasswordDetailPage = () => {
     }
   };
 
-  // Function to decrypt the password
+  // Function to decrypt the login
   async function decryptPassword(encryptedData: any) {
     if (window.ethereum) {
       try {
@@ -108,7 +108,7 @@ const PasswordDetailPage = () => {
 
         setName(passwordData[Number(index)].name);
       } catch (error) {
-        console.error("Failed to fetch your passwords:", error);
+        console.error("Failed to fetch your logins:", error);
       }
     } else {
       console.error("Please install Metamask!");
@@ -122,7 +122,7 @@ const PasswordDetailPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Password Details</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Login Details</h1>
       <h4 className="text-center mb-8">Only the recipient can decrypt this data.</h4>
       <div className="max-w-md mx-auto bg-base-100 shadow-lg rounded-lg p-6">
         <div className="mb-4">
@@ -138,7 +138,7 @@ const PasswordDetailPage = () => {
           <input value={password} disabled className="w-full" />
         </div>
         <div className="mb-4">
-          <label className="block font-medium mb-2">Website</label>
+          <label className="block font-medium mb-2">Website URL</label>
           <input value={website} disabled className="w-full" />
         </div>
         <br />
