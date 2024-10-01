@@ -1,4 +1,5 @@
-const axios = require("axios");
+import axios from "axios";
+
 //const JWT = process.env.NEXT_PUBLIC_PINATA_API_KEY;
 const JWT =
   process.env.NEXT_PUBLIC_PINATA_JWT_PART_1 +
