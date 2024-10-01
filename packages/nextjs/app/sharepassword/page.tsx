@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ShareablePasswordManager from "../../../hardhat/artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
+import ShareablePasswordManager from "../../artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
 import { pinJSONToIPFS } from "../../components/custom/pinataService";
 import * as sigUtil from "@metamask/eth-sig-util";
 import { ethers } from "ethers";

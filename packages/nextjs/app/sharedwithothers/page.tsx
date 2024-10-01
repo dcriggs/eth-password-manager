@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import ShareablePasswordManager from "../../../hardhat/artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
+import ShareablePasswordManager from "../../artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
 import { ethers } from "ethers";
 
 const SharedWithOthersPage = () => {

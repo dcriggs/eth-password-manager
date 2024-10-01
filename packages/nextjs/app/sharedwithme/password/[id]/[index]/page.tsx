@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import ShareablePasswordManager from "../../../../../../hardhat/artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
+import ShareablePasswordManager from "../../../../../artifacts/contracts/ShareablePasswordManager.sol/ShareablePasswordManager.json";
 import { fetchDataFromIPFS } from "../../../../../components/custom/pinataService";
 import { ethers } from "ethers";
 
