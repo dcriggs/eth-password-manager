@@ -57,7 +57,7 @@ const AddPasswordPage = () => {
         setLoading(true);
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
-        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+        const contractAddress = "0x90b8Bbe202Bc7ae3ee4B4FD64631E5bA54EAa3cB";
         const contractABI = ShareablePasswordManager.abi;
 
         const contract = new ethers.Contract(contractAddress, contractABI, signer);

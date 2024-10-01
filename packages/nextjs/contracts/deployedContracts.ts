@@ -472,6 +472,473 @@ const deployedContracts = {
       },
     },
   },
+  11155111: {
+    ShareablePasswordManager: {
+      address: "0x90b8Bbe202Bc7ae3ee4B4FD64631E5bA54EAa3cB",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_owner",
+              type: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "PasswordDeleted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "PasswordDetailsUpdated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+          ],
+          name: "PasswordShared",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "PasswordStored",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+          ],
+          name: "SharedPasswordRevoked",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "UserRegistered",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "index",
+              type: "uint256",
+            },
+          ],
+          name: "deletePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getAllSharedPasswordsReceived",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedDataHash",
+                  type: "string",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedBy",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedWith",
+                  type: "address",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.SharedPasswordData[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getAllSharedPasswordsSent",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedDataHash",
+                  type: "string",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedBy",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedWith",
+                  type: "address",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.SharedPasswordData[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getPasswords",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedDataHash",
+                  type: "string",
+                },
+              ],
+              internalType: "struct UserPasswordManager.PasswordData[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "getSharedPasswordsReceived",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedDataHash",
+                  type: "string",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedBy",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedWith",
+                  type: "address",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.SharedPasswordData[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+          ],
+          name: "getSharedPasswordsSent",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "encryptedDataHash",
+                  type: "string",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedBy",
+                  type: "address",
+                },
+                {
+                  internalType: "address",
+                  name: "sharedWith",
+                  type: "address",
+                },
+              ],
+              internalType: "struct ShareablePasswordManager.SharedPasswordData[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "getUserPublicKey",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "user",
+              type: "address",
+            },
+          ],
+          name: "isUserRegistered",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "publicKey",
+              type: "string",
+            },
+          ],
+          name: "registerUser",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "encryptedDataHash",
+              type: "string",
+            },
+          ],
+          name: "revokeSharedPassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "encryptedDataHash",
+              type: "string",
+            },
+          ],
+          name: "sharePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "encryptedDataHash",
+              type: "string",
+            },
+          ],
+          name: "storePassword",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "index",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "encryptedDataHash",
+              type: "string",
+            },
+          ],
+          name: "updatePasswordDetails",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdraw",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        deletePassword: "contracts/UserPasswordManager.sol",
+        getPasswords: "contracts/UserPasswordManager.sol",
+        getUserPublicKey: "contracts/UserPasswordManager.sol",
+        isUserRegistered: "contracts/UserPasswordManager.sol",
+        owner: "contracts/UserPasswordManager.sol",
+        registerUser: "contracts/UserPasswordManager.sol",
+        storePassword: "contracts/UserPasswordManager.sol",
+        updatePasswordDetails: "contracts/UserPasswordManager.sol",
+        withdraw: "contracts/UserPasswordManager.sol",
+      },
+    },
+  },
 } as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;
